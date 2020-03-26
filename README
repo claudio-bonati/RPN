@@ -1,0 +1,57 @@
+*************************************************************************
+*********** PROGRAM FOR SIMULATION OF LATTICE RP^(N-1) MODELS ***********
+*************************************************************************
+
+
+** ENERGY
+*****************************************************
+
+The partition function of the ferromagnetic RP^(N-1) model is written as
+
+Z=exp(-\beta * E)
+
+where
+
+E =\sum_{x,\mu} [ U_{x,\mu}^2 - 2U_{x,\mu} * phi_{x}^t\cdot \phi_{x+\mu} ]
+
+where U_{x,\mu} are real numbers associated to links, and \phi_{x} are R^N
+vectors associated to link which satisfy the constraint \|\phi_{x}\|=1.
+
+This form of the energy is equivalent to the more standard
+
+E = - \sum_{x,\mu} ( phi_{x}^t\cdot \phi_{x+\mu} )^2
+
+** CONFIGURE PARAMETERS
+*****************************************************
+
+The value of N is fixed at configure time by the macro N_c so that to simulate
+the RP^4 model one has to use 
+
+./configure Gauge_Group=SuN N_c=5
+
+The following macro are availbale
+
+N_c         the number of colors (default 2)
+Num_threads number of threads to be used in OpenMP (default 1)
+ST_dim      spacetime dimensionality (default 2)
+
+and the use of OpenMP can by activated by using 
+
+--enable-use-openmp     to enable the use of openmp
+
+
+After the configuration, the compilation is performed as usual by
+make
+
+Defining the macro DEBUG several sanity checks are activated, which can
+slow-down the algorithm.
+
+
+** INPUT FILE AND SOME CONVENTIONS
+*****************************************************
+
+A template input file is created when calling the executable without input file
+and everything following # (up to carriage return) in the input file is
+interpreted as a comment.
+
+

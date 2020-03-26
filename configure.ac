@@ -69,11 +69,11 @@ fi
 
 ### VARIABLES
 
-AC_ARG_VAR(N_c, the number of colors (default 2, N_c=1 for SuN means U(1)))
+AC_ARG_VAR(N_c, the number of colors (default 2))
 
 AC_ARG_VAR(Num_threads, number of threads to be used in OpenMP (default 1))
 
-AC_ARG_VAR(ST_dim, spacetime dimensionality (default 4))
+AC_ARG_VAR(ST_dim, spacetime dimensionality (default 2))
 
 
 ### DEFINE & CO

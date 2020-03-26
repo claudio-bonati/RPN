@@ -1367,9 +1367,9 @@ Some influential environment variables:
   CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
               you have headers in a nonstandard directory <include dir>
   CPP         C preprocessor
-  N_c         the number of colors (default 2, N_c=1 for SuN means U(1))
+  N_c         the number of colors (default 2)
   Num_threads number of threads to be used in OpenMP (default 1)
-  ST_dim      spacetime dimensionality (default 4)
+  ST_dim      spacetime dimensionality (default 2)
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
