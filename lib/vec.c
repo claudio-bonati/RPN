@@ -62,7 +62,40 @@ double scal_prod_Vec(Vec const * const restrict A, Vec const * const restrict B)
 
 
 // random rotation close to identity
-void rand_rot_Vec(Vec * restrict A, Vec const * const restrict B, double epsilon);
+void rand_rot_Vec(Vec * restrict A, Vec const * const restrict B, double epsilon)
+  {
+  #ifdef DEBUG
+  if(A==B)
+    {
+    fprintf(stderr, "The same pointer is used twice in (%s, %d)\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+    }
+  #endif
+
+  #ifdef __INTEL_COMPILER
+  __assume_aligned(&(A->comp), DOUBLE_ALIGN);
+  __assume_aligned(&(B->comp), DOUBLE_ALIGN);
+  #endif
+
+  int i, j;
+  double theta, tmp1, tmp2;
+
+  equal_Vec(A, B);
+
+  for(i=0; i<NCOLOR-1; i++)
+     {
+     for(j=i+1; j<NCOLOR; j++)
+        {
+        tmp1=A->comp[i];
+        tmp2=A->comp[j];
+
+        theta=(2.0*casuale()-1.0)*epsilon*PI;
+
+        A->comp[i]=  cos(theta)*tmp1 +sin(theta)*tmp2;
+        A->comp[j]= -sin(theta)*tmp1 +cos(theta)*tmp2;
+        }
+     }
+  }
 
 /*
 // initialize the flavour matrix with a vector

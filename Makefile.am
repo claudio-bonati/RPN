@@ -23,10 +23,8 @@ endian = ./include/endianness.h  \
 
 conf = ./include/conf.h \
        ./lib/conf_def.c \
-       ./lib/conf_meas.c 
-#             ./lib/gauge_conf_meas_multilevel.c \
-#             ./lib/gauge_conf_multilevel.c \
-#             ./lib/gauge_conf_upd.c 
+       ./lib/conf_meas.c \
+       ./lib/conf_upd.c 
 
 geometry = ./include/geometry.h \
            ./lib/geometry.c

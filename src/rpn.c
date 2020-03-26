@@ -26,6 +26,7 @@ void real_main(char *in_file)
     int count;
     FILE *datafilep;
     time_t time1, time2;
+    double acc, acc_local;
 
     // to disable nested parallelism
     #ifdef OPENMP_MODE
@@ -48,12 +49,37 @@ void real_main(char *in_file)
     // initialize configuration
     init_conf(&GC, &param);
 
+    // acceptance
+    acc=0.0;
+
     // montecarlo
     time(&time1);
     // count starts from 1 to avoid problems using %
     for(count=1; count < param.d_sample + 1; count++)
        {
-//       update(&GC, &geo, &param);
+       update(&GC, &geo, &param, &acc_local);
+
+       if(count>param.d_thermal)
+         {
+         acc+=acc_local;
+         }
+
+       if(count<param.d_thermal)
+         {
+         if(acc_local>0.33)
+           {
+           param.d_epsilon_metro*=1.1;
+
+           if(param.d_epsilon_metro>1.0)
+             {
+             param.d_epsilon_metro=1.0;
+             }
+           }
+         else
+           {
+           param.d_epsilon_metro*=0.9;
+           }
+         }
 
        if(count % param.d_measevery ==0 && count >= param.d_thermal)
          {
@@ -76,6 +102,8 @@ void real_main(char *in_file)
     time(&time2);
     // montecarlo end
 
+    acc/=(double)(param.d_sample-param.d_thermal);
+
     // close data file
     fclose(datafilep);
 
@@ -85,8 +113,6 @@ void real_main(char *in_file)
       write_conf_on_file(&GC, &param);
       }
 
-
-    double acc=0.3;
     // print simulation details
     print_parameters(&param, time1, time2, acc);
 

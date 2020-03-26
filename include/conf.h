@@ -81,27 +81,30 @@ void perform_measures(Conf * GC,
 
 
 // in gauge_conf_upd.c
-int metropolis_for_link(Conf *GC,
+void heatbath_for_link(Conf *GC,
+                       Geometry const * const geo,
+                       GParam const * const param,
+                       long r,
+                       int i);
+void overrelaxation_for_link(Conf *GC,
                         Geometry const * const geo,
-                        GParam const * const param,
                         long r,
                         int i);
 void calcstaples_for_phi(Conf *GC,
                          Geometry const * const geo,
-                         GParam const * const param,
                          long r,
                          Vec *staple);
 void overrelaxation_for_phi(Conf *GC,
                             Geometry const * const geo,
-                            GParam const * const param,
                             long r);
 int metropolis_for_phi(Conf *GC,
                        Geometry const * const geo,
                        GParam const * const param,
                        long r);
-void update(Conf *GC,
+void update(Conf * GC,
             Geometry const * const geo,
-            GParam const * const param);
+            GParam const * const param,
+            double *acc);
 
 
 #endif

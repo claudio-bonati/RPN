@@ -74,38 +74,6 @@ double plaquette(Conf const * const GC,
    }
 
 
-// compute the average Polyakov loop
-double polyakov(Conf const * const GC,
-                Geometry const * const geo,
-                GParam const * const param)
-   {
-   long r0;
-   double ris=0.0;
-
-   #ifdef OPENMP_MODE
-   #pragma omp parallel for num_threads(NTHREADS) private(r0) reduction(+ : ris)
-   #endif
-   for(r0=0; r0<param->d_volume; r0++)
-      {
-      long r=r0;
-      int i;
-      double aux=1.0;
-
-      for(i=0; i<param->d_size[0]; i++)
-         {
-         aux *= GC->link[r][0];
-         r=nnp(geo, r, 0);
-         }
-
-      ris+=aux;
-      }
-
-   ris *= param->d_inv_vol;
-
-   return ris;
-   }
-
-
 // compute the average value of phi_x U_{x,mu} phi_{x+mu}
 double higgs_interaction(Conf const * const GC,
                        Geometry const * const geo,
@@ -299,13 +267,12 @@ void perform_measures(Conf *GC,
 //   double plaqs, plaqt, polyre, polyim, he, tildeG0, tildeGminp, tildeD0, tildeDminp;
 //   long r;
 
-   double plaq, poly, he;
+   double plaq, he;
 
    plaq = plaquette(GC, geo, param);
-   poly = polyakov(GC, geo, param);
    he = higgs_interaction(GC, geo, param);
 
-   fprintf(datafilep, "%.12g %.12g %.12g", plaq, poly, he);
+   fprintf(datafilep, "%.12g %.12g ", plaq, he);
 
 /*
    #ifdef OPENMP_MODE
