@@ -44,10 +44,9 @@ void compute_md5sum_conf(char *res,        // the lenght is 2*MD5_DIGEST_LENGTH
                          GParam const * const param);
 
 
-// in gauge_conf_meas.c
+// in conf_meas.c
 double plaquettep(Conf const * const GC,
                   Geometry const * const geo,
-                  GParam const * const param,
                   long r,
                   int i,
                   int j);
@@ -58,11 +57,10 @@ double polyakov(Conf const * const GC,
                 Geometry const * const geo,
                 GParam const * const param);
 
+double higgs_interaction(Conf const * const GC,
+                         Geometry const * const geo,
+                         GParam const * const param);
 /*
-void higgs_interaction(Gauge_Conf const * const GC,
-                       Geometry const * const geo,
-                       GParam const * const param,
-                       double *he);
 void compute_flavour_observables(Gauge_Conf const * const GC,
                                  GParam const * const param,
                                  double *tildeG0,
@@ -75,15 +73,12 @@ void compute_flavour_observables_corr(Gauge_Conf const * const GC,
                                       double *corrQQ,
                                       double *corr0string0,
                                       double *corr0string1);
-void perform_measures_higgs(Gauge_Conf * GC,
-                            Geometry const * const geo,
-                            GParam const * const param,
-                            FILE *datafilep);
-void perform_measures_higgs_for_testing(Gauge_Conf *GC,
-                                        Geometry const * const geo,
-                                        GParam const * const param,
-                                        FILE *datafilep);
 */
+void perform_measures(Conf * GC,
+                      Geometry const * const geo,
+                      GParam const * const param,
+                      FILE *datafilep);
+
 
 // in gauge_conf_upd.c
 int metropolis_for_link(Conf *GC,

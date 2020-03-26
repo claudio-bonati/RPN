@@ -96,7 +96,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
-am__objects_1 = ./lib/conf_def.$(OBJEXT)
+am__objects_1 = ./lib/conf_def.$(OBJEXT) ./lib/conf_meas.$(OBJEXT)
 am__objects_2 = ./lib/dSFMT.$(OBJEXT)
 am__objects_3 = ./lib/endianness.$(OBJEXT)
 am__objects_4 = ./lib/geometry.$(OBJEXT)
@@ -295,9 +295,9 @@ endian = ./include/endianness.h  \
 #flavourmatrix = ./include/flavour_matrix.h \
 #                ./lib/flavour_matrix.c
 conf = ./include/conf.h \
-       ./lib/conf_def.c
+       ./lib/conf_def.c \
+       ./lib/conf_meas.c 
 
-#             ./lib/gauge_conf_meas.c \
 #             ./lib/gauge_conf_meas_multilevel.c \
 #             ./lib/gauge_conf_multilevel.c \
 #             ./lib/gauge_conf_upd.c 
@@ -444,6 +444,8 @@ lib/$(DEPDIR)/$(am__dirstamp):
 	@: > lib/$(DEPDIR)/$(am__dirstamp)
 ./lib/conf_def.$(OBJEXT): lib/$(am__dirstamp) \
 	lib/$(DEPDIR)/$(am__dirstamp)
+./lib/conf_meas.$(OBJEXT): lib/$(am__dirstamp) \
+	lib/$(DEPDIR)/$(am__dirstamp)
 ./lib/dSFMT.$(OBJEXT): lib/$(am__dirstamp) \
 	lib/$(DEPDIR)/$(am__dirstamp)
 ./lib/endianness.$(OBJEXT): lib/$(am__dirstamp) \
@@ -469,6 +471,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./lib/$(DEPDIR)/conf_def.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./lib/$(DEPDIR)/conf_meas.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./lib/$(DEPDIR)/dSFMT.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./lib/$(DEPDIR)/endianness.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./lib/$(DEPDIR)/geometry.Po@am__quote@

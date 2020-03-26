@@ -22,8 +22,8 @@ endian = ./include/endianness.h  \
 #                ./lib/flavour_matrix.c
 
 conf = ./include/conf.h \
-       ./lib/conf_def.c
-#             ./lib/gauge_conf_meas.c \
+       ./lib/conf_def.c \
+       ./lib/conf_meas.c 
 #             ./lib/gauge_conf_meas_multilevel.c \
 #             ./lib/gauge_conf_multilevel.c \
 #             ./lib/gauge_conf_upd.c 

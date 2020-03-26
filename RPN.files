@@ -28,3 +28,4 @@ include/vec.h
 lib/vec.c
 include/conf.h
 lib/conf_def.c
+lib/conf_meas.c
