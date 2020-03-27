@@ -13,15 +13,39 @@
 #include"../include/gparam.h"
 #include"../include/random.h"
 
+// perform an update with heatbath of the link variables
+void metropolis_for_link(Conf *GC,
+                         Geometry const * const geo,
+                         GParam const * const param,
+                         long r,
+                         int i)
+  {
+  double old_energy, new_energy;
+  double old_link, new_link;
+
+  const double v1v2=scal_prod_Vec(&(GC->phi[r]), &(GC->phi[nnp(geo, r, i)]));
+
+  old_link = GC->link[r][i];
+  old_energy = old_link*old_link/param->d_beta - 2.0 * old_link * v1v2;
+
+  new_link = old_link + 0.5*(2.0*casuale()-1);
+  new_energy = new_link*new_link/param->d_beta - 2.0 * new_link * v1v2;
+
+  if(casuale()< exp(old_energy-new_energy))
+    {
+    GC->link[r][i] = new_link;
+    }
+  }
+
 
 // perform an update with heatbath of the link variables
 void heatbath_for_link(Conf *GC,
-                      Geometry const * const geo,
-                      GParam const * const param,
-                      long r,
-                      int i)
+                       Geometry const * const geo,
+                       GParam const * const param,
+                       long r,
+                       int i)
   {
-  double v1v2=scal_prod_Vec(&(GC->phi[r]), &(GC->phi[nnp(geo, r, i)]));
+  const double v1v2=scal_prod_Vec(&(GC->phi[r]), &(GC->phi[nnp(geo, r, i)]));
 
   // probability = exp (-link^2/beta+2*link*v1v2) \propto \exp(-(link-beta*v1v2)^2/beta )
   // gaussian with sigma=sqrt(\beta/2)
@@ -38,7 +62,7 @@ void overrelaxation_for_link(Conf *GC,
                              long r,
                              int i)
   {
-  double v1v2=scal_prod_Vec(&(GC->phi[r]), &(GC->phi[nnp(geo, r, i)]));
+  const double v1v2=scal_prod_Vec(&(GC->phi[r]), &(GC->phi[nnp(geo, r, i)]));
 
   // probability = exp (-link^2/beta+2*link*v1v2) \propto \exp(-(link-beta*v1v2)^2/beta )
 
@@ -77,26 +101,22 @@ void overrelaxation_for_phi(Conf *GC,
                             Geometry const * const geo,
                             long r)
   {
-  double norm;
-  Vec staple;
+  double norm, aux1, aux2;
+  Vec staple, new_phi;
 
   calcstaples_for_phi(GC, geo, r, &staple);
   norm=norm_Vec(&staple);
 
   if(norm>MIN_VALUE)
     {
-    double aux1, aux2;
-    Vec v1;
-
-    equal_Vec(&v1, &GC->phi[r]);
-
-    aux1=scal_prod_Vec(&v1, &staple);
+    aux1=scal_prod_Vec(&(GC->phi[r]), &staple);
     aux2=aux1/(norm*norm);
 
-    times_equal_real_Vec(&v1, 2.0);
-    minus_equal_times_real_Vec(&v1, &staple, aux2);
+    equal_Vec(&new_phi, &(GC->phi[r]));
+    times_equal_real_Vec(&new_phi, 2.0);
+    minus_equal_times_real_Vec(&new_phi, &staple, aux2);
 
-    equal_Vec(&GC->phi[r], &v1);
+    equal_Vec(&GC->phi[r], &new_phi);
     }
   else
     {
@@ -162,15 +182,7 @@ void update(Conf * GC,
       #ifdef OPENMP_MODE
       #pragma omp parallel for num_threads(NTHREADS) private(r)
       #endif
-      for(r=0; r<(param->d_volume)/2; r++)
-         {
-         heatbath_for_link(GC, geo, param, r, dir);
-         }
-
-      #ifdef OPENMP_MODE
-      #pragma omp parallel for num_threads(NTHREADS) private(r)
-      #endif
-      for(r=(param->d_volume)/2; r<(param->d_volume); r++)
+      for(r=0; r<(param->d_volume); r++)
          {
          heatbath_for_link(GC, geo, param, r, dir);
          }
@@ -184,15 +196,7 @@ void update(Conf * GC,
          #ifdef OPENMP_MODE
          #pragma omp parallel for num_threads(NTHREADS) private(r)
          #endif
-         for(r=0; r<(param->d_volume)/2; r++)
-            {
-            overrelaxation_for_link(GC, geo, param, r, dir);
-            }
-
-         #ifdef OPENMP_MODE
-         #pragma omp parallel for num_threads(NTHREADS) private(r)
-         #endif
-         for(r=(param->d_volume)/2; r<(param->d_volume); r++)
+         for(r=0; r<(param->d_volume); r++)
             {
             overrelaxation_for_link(GC, geo, param, r, dir);
             }
@@ -230,6 +234,117 @@ void update(Conf * GC,
    for(r=(param->d_volume)/2; r<(param->d_volume); r++)
       {
       a[r]+=metropolis_for_phi(GC, geo, param, r);
+      }
+
+   // acceptance computation
+   asum=0;
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for reduction(+:asum) private(r)
+   #endif
+   for(r=0; r<param->d_volume; r++)
+      {
+      asum+=(long)a[r];
+      }
+
+   *acc=((double)asum)*param->d_inv_vol;
+
+   // final unitarization
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(r)
+   #endif
+   for(r=0; r<(param->d_volume); r++)
+      {
+      unitarize_Vec(&(GC->phi[r]));
+      }
+
+   free(a);
+
+   GC->update_index++;
+   }
+
+
+
+// perform an update of the phi field with metropolis
+// retrn 0 if the trial state is rejected and 1 otherwise
+int metropolis_for_phi_without_links(Conf *GC,
+                                     Geometry const * const geo,
+                                     GParam const * const param,
+                                     long r)
+  {
+  int i, acc=0;
+  double old_energy, new_energy, tmp;
+  Vec old_vector, new_vector;
+
+  equal_Vec(&old_vector, &(GC->phi[r]));
+
+  old_energy=0.0;
+  for(i=0; i<STDIM; i++)
+     {
+     tmp = scal_prod_Vec(&old_vector, &(GC->phi[nnp(geo, r, i)]) );
+     old_energy -= param->d_beta * tmp * tmp;
+
+     tmp = scal_prod_Vec(&old_vector, &(GC->phi[nnm(geo, r, i)]) );
+     old_energy -= param->d_beta * tmp * tmp;
+     }
+
+  rand_rot_Vec(&new_vector, &old_vector, param->d_epsilon_metro);
+
+  new_energy=0.0;
+  for(i=0; i<STDIM; i++)
+     {
+     tmp = scal_prod_Vec(&new_vector, &(GC->phi[nnp(geo, r, i)]) );
+     new_energy -= param->d_beta * tmp * tmp;
+
+     tmp = scal_prod_Vec(&new_vector, &(GC->phi[nnm(geo, r, i)]) );
+     new_energy -= param->d_beta * tmp * tmp;
+     }
+
+  if(casuale()< exp(old_energy-new_energy))
+    {
+    equal_Vec(&(GC->phi[r]), &new_vector);
+    acc+=1;
+    }
+
+  return acc;
+  }
+
+
+// perform a complete update
+void update_without_links(Conf * GC,
+                          Geometry const * const geo,
+                          GParam const * const param,
+                          double *acc)
+   {
+   int err, *a;
+   long r, asum;
+
+   err=posix_memalign((void**)&a, (size_t)INT_ALIGN, (size_t) param->d_volume * sizeof(int));
+   if(err!=0)
+     {
+     fprintf(stderr, "Problems in allocating a vector! (%s, %d)\n", __FILE__, __LINE__);
+     exit(EXIT_FAILURE);
+     }
+
+   for(r=0; r<param->d_volume; r++)
+      {
+      a[r]=0;
+      }
+
+   // metropolis on higgs
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(r)
+   #endif
+   for(r=0; r<(param->d_volume)/2; r++)
+      {
+      a[r]+=metropolis_for_phi_without_links(GC, geo, param, r);
+      }
+
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(r)
+   #endif
+   for(r=(param->d_volume)/2; r<(param->d_volume); r++)
+      {
+      a[r]+=metropolis_for_phi_without_links(GC, geo, param, r);
       }
 
    // acceptance computation

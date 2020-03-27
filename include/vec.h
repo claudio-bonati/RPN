@@ -203,7 +203,7 @@ inline double norm_Vec(Vec const * const restrict A)
   ris=0.0;
   for(i=0; i<NFLAVOUR; i++)
      {
-     ris+=A->comp[i]*A->comp[i];
+     ris+=(A->comp[i]*A->comp[i]);
      }
   return sqrt(ris);
   }
@@ -258,7 +258,7 @@ inline double scal_prod_Vec(Vec const * const restrict A, Vec const * const rest
 
   for(i=0; i<NFLAVOUR; i++)
      {
-     ris+=(A->comp[i]) * B->comp[i];
+     ris+=(A->comp[i] * B->comp[i]);
      }
 
   return ris;

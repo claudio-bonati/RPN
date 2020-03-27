@@ -58,6 +58,7 @@ void real_main(char *in_file)
     for(count=1; count < param.d_sample + 1; count++)
        {
        update(&GC, &geo, &param, &acc_local);
+//       update_without_links(&GC, &geo, &param, &acc_local);
 
        if(count>param.d_thermal)
          {
