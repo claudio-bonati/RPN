@@ -140,6 +140,8 @@ void compute_flavour_observables(Conf const * const GC,
      equal_FMatrix(&tmp1, &(GC->Qh[r]));
      equal_FMatrix(&tmp2, &tmp1);
 
+     plus_equal_FMatrix(&Q, &tmp1);
+
      si_to_cart(coord, r, param);
 
      times_equal_complex_FMatrix(&tmp1, cexp(I*((double)coord[1])*p));
