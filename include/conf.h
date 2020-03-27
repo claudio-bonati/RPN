@@ -88,6 +88,7 @@ void heatbath_for_link(Conf *GC,
                        int i);
 void overrelaxation_for_link(Conf *GC,
                         Geometry const * const geo,
+                        GParam const * const param,
                         long r,
                         int i);
 void calcstaples_for_phi(Conf *GC,

@@ -23,25 +23,26 @@ void heatbath_for_link(Conf *GC,
   {
   double v1v2=scal_prod_Vec(&(GC->phi[r]), &(GC->phi[nnp(geo, r, i)]));
 
-  // energy = link^2 - 2 link * v1v2
-  // probability = exp (-beta*energy) \propto \exp(-beta*(link-v1v2)^2 )
+  // probability = exp (-link^2/beta+2*link*v1v2) \propto \exp(-(link-beta*v1v2)^2/beta )
+  // gaussian with sigma=sqrt(\beta/2)
+  // generic gaussian = sigma*normal + mu
 
-  GC->link[r][i] = gauss1()/sqrt(2*param->d_beta) + v1v2;
+  GC->link[r][i] = gauss1()*sqrt(param->d_beta/2.0) + v1v2*param->d_beta;
   }
 
 
 // perform an update with overrelaxation of the link variables
 void overrelaxation_for_link(Conf *GC,
                              Geometry const * const geo,
+                             GParam const * const param,
                              long r,
                              int i)
   {
   double v1v2=scal_prod_Vec(&(GC->phi[r]), &(GC->phi[nnp(geo, r, i)]));
 
-  // energy = link^2 - 2 link * v1v2
-  // probability = exp (-beta*energy) \propto \exp(-beta*(link-v1v2)^2 )
+  // probability = exp (-link^2/beta+2*link*v1v2) \propto \exp(-(link-beta*v1v2)^2/beta )
 
-  GC->link[r][i] = 2*v1v2-GC->link[r][i];
+  GC->link[r][i] = 2.0*v1v2*param->d_beta - GC->link[r][i];
   }
 
 
@@ -117,11 +118,11 @@ int metropolis_for_phi(Conf *GC,
 
   calcstaples_for_phi(GC, geo, r, &staple);
 
-  old_energy=2.0*param->d_beta * scal_prod_Vec(&(GC->phi[r]), &staple);
+  old_energy=-2.0 * scal_prod_Vec(&(GC->phi[r]), &staple);
 
   rand_rot_Vec(&new_vector, &(GC->phi[r]), param->d_epsilon_metro);
 
-  new_energy=2.0*param->d_beta * scal_prod_Vec(&new_vector, &staple);
+  new_energy=-2.0 * scal_prod_Vec(&new_vector, &staple);
 
   if(casuale()< exp(old_energy-new_energy))
     {
@@ -185,7 +186,7 @@ void update(Conf * GC,
          #endif
          for(r=0; r<(param->d_volume)/2; r++)
             {
-            overrelaxation_for_link(GC, geo, r, dir);
+            overrelaxation_for_link(GC, geo, param, r, dir);
             }
 
          #ifdef OPENMP_MODE
@@ -193,7 +194,7 @@ void update(Conf * GC,
          #endif
          for(r=(param->d_volume)/2; r<(param->d_volume); r++)
             {
-            overrelaxation_for_link(GC, geo, r, dir);
+            overrelaxation_for_link(GC, geo, param, r, dir);
             }
          }
 
