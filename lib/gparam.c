@@ -347,7 +347,7 @@ void print_parameters(GParam const * const param, time_t time_start, time_t time
      fprintf(fp, "using OpenMP with %d threads\n\n", NTHREADS);
     #endif
 
-    fprintf(fp, "number of colors: %d\n", NCOLOR);
+    fprintf(fp, "number of flavours: %d\n", NFLAVOUR);
     fprintf(fp, "spacetime dimensionality: %d\n\n", STDIM);
 
     fprintf(fp, "lattice: %d", param->d_size[0]);

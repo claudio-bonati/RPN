@@ -45,8 +45,8 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
-/* Number of colors */
-#undef NCOLOR
+/* Number of flavours */
+#undef NFLAVOUR
 
 /* Number of threads to be used in OpenMP */
 #undef NTHREADS

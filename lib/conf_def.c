@@ -9,6 +9,7 @@
 #include<string.h>
 
 #include"../include/endianness.h"
+#include"../include/flavour_matrix.h"
 #include"../include/gparam.h"
 #include"../include/geometry.h"
 #include"../include/conf.h"
@@ -25,6 +26,7 @@ void init_conf(Conf *GC, GParam const * const param)
     fprintf(stderr, "Problems in allocating the lattice! (%s, %d)\n", __FILE__, __LINE__);
     exit(EXIT_FAILURE);
     }
+
   err=posix_memalign((void**) &(GC->link), (size_t) DOUBLE_ALIGN, (size_t) param->d_volume * sizeof(double *));
   if(err!=0)
     {
@@ -40,6 +42,13 @@ void init_conf(Conf *GC, GParam const * const param)
        exit(EXIT_FAILURE);
        }
      }
+
+  err=posix_memalign((void**) &(GC->Qh), (size_t) DOUBLE_ALIGN, (size_t) param->d_volume * sizeof(FMatrix));
+  if(err!=0)
+    {
+    fprintf(stderr, "Problems in allocating the lattice! (%s, %d)\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+    }
 
   // initialize lattice
   if(param->d_start==0) // ordered start
@@ -87,7 +96,6 @@ void init_conf(Conf *GC, GParam const * const param)
   }
 
 
-// DA MODIFICARE
 void read_conf(Conf *GC, GParam const * const param)
   {
   FILE *fp;
@@ -202,6 +210,7 @@ void free_conf(Conf *GC, GParam const * const param)
      }
   free(GC->link);
   free(GC->phi);
+  free(GC->Qh);
   }
 
 
@@ -309,7 +318,7 @@ void compute_md5sum_conf(char *res, Conf const * const GC, GParam const * const 
      {
      si=lex_to_si(lex, param);
 
-     for(k=0; k<NCOLOR; k++)
+     for(k=0; k<NFLAVOUR; k++)
         {
         MD5_Update(&mdContext, &((GC->phi[si]).comp[k]), sizeof(double));
         }

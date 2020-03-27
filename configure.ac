@@ -1,5 +1,5 @@
 AC_PREREQ([2.59])
-AC_INIT([rpn], [0.0.1], [claudio.bonati82@gmail.com])
+AC_INIT([rpn], [0.1.0], [claudio.bonati82@gmail.com])
 AM_INIT_AUTOMAKE(subdir-objects)
 AC_CONFIG_SRCDIR([./include/macro.h])
 AC_CONFIG_HEADERS([config.h])
@@ -69,7 +69,7 @@ fi
 
 ### VARIABLES
 
-AC_ARG_VAR(N_c, the number of colors (default 2))
+AC_ARG_VAR(N_f, the number of flavours (default 2))
 
 AC_ARG_VAR(Num_threads, number of threads to be used in OpenMP (default 1))
 
@@ -84,15 +84,15 @@ fi
 
 ### TEST
 
-if test x${N_c} = x; then
+if test x${N_f} = x; then
   AC_MSG_WARN([ 
    *****
-   No chosen value for N_c: using the default N_c=2
+   No chosen value for N_f: using the default N_c=2
    ***** 
    ])
-  AC_DEFINE_UNQUOTED(NCOLOR, 2, [Number of colors])
+  AC_DEFINE_UNQUOTED(NFLAVOUR, 2, [Number of flavours])
 else
-  AC_DEFINE_UNQUOTED(NCOLOR, ${N_c}, [Number of colors])
+  AC_DEFINE_UNQUOTED(NFLAVOUR, ${N_f}, [Number of flavours])
 fi
 
 if test x${use_openmp} = xyes; then

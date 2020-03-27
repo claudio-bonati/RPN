@@ -30,3 +30,5 @@ include/conf.h
 lib/conf_def.c
 lib/conf_meas.c
 lib/conf_upd.c
+include/flavour_matrix.h
+lib/flavour_matrix.c

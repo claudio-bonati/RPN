@@ -6,7 +6,7 @@
 #include<openssl/md5.h>
 #include<stdio.h>
 
-//#include"flavour_matrix.h"
+#include"flavour_matrix.h"
 #include"gparam.h"
 #include"geometry.h"
 #include"vec.h"
@@ -15,13 +15,10 @@
 typedef struct Conf {
   long update_index;
 
-  double **link;       // [volume] [STDIM]
+  double **link;    // [volume] [STDIM]
   Vec *phi;         // [volume]
 
-//  // for higgs field & co
-//  GAUGE_VECS *higgs;    // [volume]
-//  FMatrix *Qh;          // [volume]
-//  double *Dh;   // [volume]
+  FMatrix *Qh;      // [volume]
   } Conf;
 
 
@@ -60,20 +57,10 @@ double polyakov(Conf const * const GC,
 double higgs_interaction(Conf const * const GC,
                          Geometry const * const geo,
                          GParam const * const param);
-/*
-void compute_flavour_observables(Gauge_Conf const * const GC,
+void compute_flavour_observables(Conf const * const GC,
                                  GParam const * const param,
                                  double *tildeG0,
-                                 double *tildeGminp,
-                                 double *tildeD0,
-                                 double *tildeDminp);
-void compute_flavour_observables_corr(Gauge_Conf const * const GC,
-                                      Geometry const * const geo,
-                                      GParam const * const param,
-                                      double *corrQQ,
-                                      double *corr0string0,
-                                      double *corr0string1);
-*/
+                                 double *tildeGminp);
 void perform_measures(Conf * GC,
                       Geometry const * const geo,
                       GParam const * const param,

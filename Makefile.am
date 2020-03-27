@@ -18,8 +18,8 @@ dSFMT = ./include/dSFMT-common.h \
 endian = ./include/endianness.h  \
          ./lib/endianness.c 
 
-#flavourmatrix = ./include/flavour_matrix.h \
-#                ./lib/flavour_matrix.c
+flavourmatrix = ./include/flavour_matrix.h \
+                ./lib/flavour_matrix.c
 
 conf = ./include/conf.h \
        ./lib/conf_def.c \
@@ -32,13 +32,6 @@ geometry = ./include/geometry.h \
 gparam = ./include/gparam.h \
          ./lib/gparam.c
 
-#son = ./include/son.h \
-#      ./include/son_monopoles.h \
-#      ./include/son_upd.h \
-#      ./lib/son.c \
-#      ./lib/son_monopoles.c \
-#      ./lib/son_upd.c
-
 random = ./include/myrngparam.h \
          ./include/random.h \
          ./lib/random.c 
@@ -50,6 +43,7 @@ rpn_SOURCES=./src/rpn.c \
             $(conf) \
             $(dSFMT) \
             $(endian) \
+            $(flavourmatrix) \
             $(geometry) \
             $(gparam) \
             ./include/macro.h \

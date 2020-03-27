@@ -3,6 +3,9 @@
 
 #include"../config.h"
 
+// function to access matrix elements
+#define m(X,Y) ((X)*NFLAVOUR + (Y))
+
 #define MIN_VALUE 1.0e-13
 
 #define INT_ALIGN 16

@@ -82,9 +82,9 @@ void rand_rot_Vec(Vec * restrict A, Vec const * const restrict B, double epsilon
 
   equal_Vec(A, B);
 
-  for(i=0; i<NCOLOR-1; i++)
+  for(i=0; i<NFLAVOUR-1; i++)
      {
-     for(j=i+1; j<NCOLOR; j++)
+     for(j=i+1; j<NFLAVOUR; j++)
         {
         tmp1=A->comp[i];
         tmp2=A->comp[j];
@@ -97,46 +97,12 @@ void rand_rot_Vec(Vec * restrict A, Vec const * const restrict B, double epsilon
      }
   }
 
-/*
-// initialize the flavour matrix with a vector
-// FM[mf(i,j)]=\sum_{on_gauge}conj(v1[i])v1[j] - delta^{ij}/N
-// i, j are the flavour indices
-inline void init_FMatrix_SoNVecs(FMatrix * restrict fmatrix, SoNVecs const * const restrict v1)
-  {
-  #ifdef __INTEL_COMPILER
-  __assume_aligned(&(fmatrix->comp), DOUBLE_ALIGN);
-  __assume_aligned(&(v1->comp), DOUBLE_ALIGN);
-  #endif
-
-  int i, j, k;
-
-  zero_FMatrix(fmatrix);
-
-  for(i=0; i<NHIGGS; i++)
-     {
-     for(j=0; j<NHIGGS; j++)
-        {
-        for(k=0; k<NCOLOR; k++)
-           {
-           fmatrix->comp[mf(i,j)]+=( (v1->comp[NCOLOR*i+k])*(v1->comp[NCOLOR*j+k]) + 0.0*I );
-           }
-        }
-     }
-
-  for(i=0; i<NHIGGS; i++)
-     {
-     fmatrix->comp[mf(i,i)]-=( 1.0/(double)NHIGGS + 0.0*I);
-     }
-  }
-*/
-
-
 // print on file
 int print_on_file_Vec(FILE *fp, Vec const * const A)
   {
   int i, err;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      err=fprintf(fp, "%.16f ", A->comp[i]);
      if(err<0)
@@ -158,7 +124,7 @@ int print_on_binary_file_noswap_Vec(FILE *fp, Vec const * const A)
   size_t err;
   double aux;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      aux=A->comp[i];
      err=fwrite(&aux, sizeof(double), 1, fp);
@@ -180,7 +146,7 @@ int print_on_binary_file_swap_Vec(FILE *fp, Vec const * const A)
   size_t err;
   double aux;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      aux=A->comp[i];
 
@@ -222,7 +188,7 @@ int read_from_file_Vec(FILE *fp, Vec *A)
   int i, err;
   double aux;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      err=fscanf(fp, "%lg", &aux);
      if(err!=1)
@@ -244,7 +210,7 @@ int read_from_binary_file_noswap_Vec(FILE *fp, Vec *A)
   int i;
   double aux;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      err=fread(&aux, sizeof(double), 1, fp);
      if(err!=1)
@@ -267,7 +233,7 @@ int read_from_binary_file_swap_Vec(FILE *fp, Vec *A)
   size_t err;
   double aux;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      err=fread(&aux, sizeof(double), 1, fp);
      if(err!=1)

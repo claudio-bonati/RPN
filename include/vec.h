@@ -9,7 +9,7 @@
 #include"random.h"
 
 typedef struct Vec {
-   double comp[NCOLOR] __attribute__((aligned(DOUBLE_ALIGN)));
+   double comp[NFLAVOUR] __attribute__((aligned(DOUBLE_ALIGN)));
 } Vec;
 
 
@@ -23,7 +23,7 @@ inline void one_Vec(Vec * restrict A)
   int i;
 
   A->comp[0]=1.0;
-  for(i=1; i<NCOLOR; i++)
+  for(i=1; i<NFLAVOUR; i++)
      {
      A->comp[i]=0.0;
      }
@@ -39,7 +39,7 @@ inline void zero_Vec(Vec * restrict A)
 
   int i;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      A->comp[i]=0.0;
      }
@@ -64,7 +64,7 @@ inline void equal_Vec(Vec * restrict A, Vec const * const restrict B)
 
   int i;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      A->comp[i]=B->comp[i];
      }
@@ -89,7 +89,7 @@ inline void plus_equal_Vec(Vec * restrict A, Vec const * const restrict B)
 
   int i;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      A->comp[i]+=B->comp[i];
      }
@@ -114,7 +114,7 @@ inline void minus_equal_Vec(Vec * restrict A, Vec const * const restrict B)
 
   int i;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      A->comp[i]-=B->comp[i];
      }
@@ -139,7 +139,7 @@ inline void minus_equal_times_real_Vec(Vec * restrict A, Vec const * const restr
 
   int i;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      A->comp[i]-=(r*B->comp[i]);
      }
@@ -167,7 +167,7 @@ inline void lin_comb_Vec(Vec * restrict A,
 
   int i;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      A->comp[i]=b*(B->comp[i])+c*(C->comp[i]);
      }
@@ -183,7 +183,7 @@ inline void times_equal_real_Vec(Vec * restrict A, double r)
 
   int i;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      A->comp[i]*=r;
      }
@@ -201,7 +201,7 @@ inline double norm_Vec(Vec const * const restrict A)
   double ris;
 
   ris=0.0;
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      ris+=A->comp[i]*A->comp[i];
      }
@@ -228,7 +228,7 @@ inline void rand_vec_Vec(Vec * restrict A)
   {
   int i;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      A->comp[i]=2.0*casuale()-1.0;
      }
@@ -256,7 +256,7 @@ inline double scal_prod_Vec(Vec const * const restrict A, Vec const * const rest
   int i;
   double ris=0.0;
 
-  for(i=0; i<NCOLOR; i++)
+  for(i=0; i<NFLAVOUR; i++)
      {
      ris+=(A->comp[i]) * B->comp[i];
      }
@@ -267,40 +267,6 @@ inline double scal_prod_Vec(Vec const * const restrict A, Vec const * const rest
 
 // random rotation close to identity
 void rand_rot_Vec(Vec * restrict A, Vec const * const restrict B, double epsilon);
-
-
-/*
-// initialize the flavour matrix with a vector
-// FM[mf(i,j)]=\sum_{on_gauge}conj(v1[i])v1[j] - delta^{ij}/N
-// i, j are the flavour indices
-inline void init_FMatrix_SoNVecs(FMatrix * restrict fmatrix, SoNVecs const * const restrict v1)
-  {
-  #ifdef __INTEL_COMPILER
-  __assume_aligned(&(fmatrix->comp), DOUBLE_ALIGN);
-  __assume_aligned(&(v1->comp), DOUBLE_ALIGN);
-  #endif
-
-  int i, j, k;
-
-  zero_FMatrix(fmatrix);
-
-  for(i=0; i<NHIGGS; i++)
-     {
-     for(j=0; j<NHIGGS; j++)
-        {
-        for(k=0; k<NCOLOR; k++)
-           {
-           fmatrix->comp[mf(i,j)]+=( (v1->comp[NCOLOR*i+k])*(v1->comp[NCOLOR*j+k]) + 0.0*I );
-           }
-        }
-     }
-
-  for(i=0; i<NHIGGS; i++)
-     {
-     fmatrix->comp[mf(i,i)]-=( 1.0/(double)NHIGGS + 0.0*I);
-     }
-  }
-*/
 
 
 // print on screen
