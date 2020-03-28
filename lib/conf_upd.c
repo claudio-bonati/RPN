@@ -13,7 +13,7 @@
 #include"../include/gparam.h"
 #include"../include/random.h"
 
-// perform an update with heatbath of the link variables
+// perform an update with metropolis of the link variables
 void metropolis_for_link(Conf *GC,
                          Geometry const * const geo,
                          GParam const * const param,
@@ -101,27 +101,47 @@ void overrelaxation_for_phi(Conf *GC,
                             Geometry const * const geo,
                             long r)
   {
-  double norm, aux1, aux2;
-  Vec staple, new_phi;
+  double norm, aux1;
+  Vec staple, newlink;
 
   calcstaples_for_phi(GC, geo, r, &staple);
   norm=norm_Vec(&staple);
 
+  #ifdef DEBUG
+  double prod_before=scal_prod_Vec(&(GC->phi[r]), &staple);
+  #endif
+
   if(norm>MIN_VALUE)
     {
-    aux1=scal_prod_Vec(&(GC->phi[r]), &staple);
-    aux2=aux1/(norm*norm);
+    equal_Vec(&newlink, &staple);
+    times_equal_real_Vec(&newlink, 1./norm);
+    aux1=scal_prod_Vec(&(GC->phi[r]), &newlink);
+    times_equal_real_Vec(&newlink, 2.0*aux1);
 
-    equal_Vec(&new_phi, &(GC->phi[r]));
-    times_equal_real_Vec(&new_phi, 2.0);
-    minus_equal_times_real_Vec(&new_phi, &staple, aux2);
+    minus_equal_Vec(&newlink, &(GC->phi[r]));
 
-    equal_Vec(&GC->phi[r], &new_phi);
+    equal_Vec(&(GC->phi[r]), &newlink);
     }
   else
     {
     rand_vec_Vec(&(GC->phi[r]) );
     }
+
+  #ifdef DEBUG
+  double prod_after=scal_prod_Vec(&(GC->phi[r]), &staple);
+
+  if(fabs(prod_before-prod_after)>MIN_VALUE)
+    {
+    fprintf(stderr, "Problem in overrelaxation (%s, %d)\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+    }
+
+  if(fabs(norm_Vec(&(GC->phi[r]))-1)>MIN_VALUE)
+    {
+    fprintf(stderr, "Problem in overrelaxation (%s, %d)\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+    }
+  #endif
   }
 
 
@@ -149,6 +169,14 @@ int metropolis_for_phi(Conf *GC,
     equal_Vec(&(GC->phi[r]), &new_vector);
     acc+=1;
     }
+
+  #ifdef DEBUG
+  if(fabs(norm_Vec(&(GC->phi[r]))-1)>MIN_VALUE)
+    {
+    fprintf(stderr, "Problem in metropolis (%s, %d)\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+    }
+  #endif
 
   return acc;
   }
@@ -219,7 +247,7 @@ void update(Conf * GC,
          }
       }
 
-   // metropolis on higgs
+   // metropolis on phi
    #ifdef OPENMP_MODE
    #pragma omp parallel for num_threads(NTHREADS) private(r)
    #endif
@@ -261,7 +289,6 @@ void update(Conf * GC,
 
    GC->update_index++;
    }
-
 
 
 // perform an update of the phi field with metropolis
@@ -309,7 +336,7 @@ int metropolis_for_phi_without_links(Conf *GC,
   }
 
 
-// perform a complete update
+// perform a complete update without using link variables
 void update_without_links(Conf * GC,
                           Geometry const * const geo,
                           GParam const * const param,
@@ -330,7 +357,7 @@ void update_without_links(Conf * GC,
       a[r]=0;
       }
 
-   // metropolis on higgs
+   // metropolis on phi
    #ifdef OPENMP_MODE
    #pragma omp parallel for num_threads(NTHREADS) private(r)
    #endif

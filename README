@@ -6,16 +6,18 @@
 ** ENERGY
 *****************************************************
 
-The partition function of the ferromagnetic RP^(N-1) model is written as
+This partition function is
+
+Z = exp( \beta * \sum_{x,\mu} [ phi_{x}^t\cdot \phi_{x+\mu} ]^2 )
+
+where \phi_{x} are R^N vectors associated to sites which satisfy the constraint
+\|\phi_{x}\|=1.
+
+For the ferromagnetic case this action can be rewritten as
 
 Z=exp(\sum_{x,\mu} [ - U_{x,\mu}^2/beta + 2 U_{x,\mu} * phi_{x}^t\cdot \phi_{x+\mu} ] )
 
-where U_{x,\mu} are real numbers associated to links, and \phi_{x} are R^N
-vectors associated to link which satisfy the constraint \|\phi_{x}\|=1.
-
-This form of the action is equivalent to the more standard
-
-Z = exp( \beta * \sum_{x,\mu} [ phi_{x}^t\cdot \phi_{x+\mu} ]^2 )
+where U_{x,\mu} are real numbers associated to links.
 
 ** CONFIGURE PARAMETERS
 *****************************************************

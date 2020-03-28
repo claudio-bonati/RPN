@@ -163,19 +163,12 @@ void compute_flavour_observables(Conf const * const GC,
 
 
 void perform_measures(Conf *GC,
-                      Geometry const * const geo,
                       GParam const * const param,
                       FILE *datafilep)
    {
    long r;
 
-   double plaq, he;
    double tildeG0, tildeGminp;
-
-   plaq = plaquette(GC, geo, param);
-   he = higgs_interaction(GC, geo, param);
-
-   fprintf(datafilep, "%.12g %.12g ", plaq, he);
 
    #ifdef OPENMP_MODE
    #pragma omp parallel for num_threads(NTHREADS) private(r)

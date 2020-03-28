@@ -77,15 +77,15 @@ if __name__=="__main__":
   #print(blocksize, end=' ')
 
   # magnetic susceptbility
-  ris, err = jack.jackknife_for_primary(id, data[2], blocksize)
+  ris, err = jack.jackknife_for_primary(id, data[0], blocksize)
   print(ris, err, end=' ')
 
   # U 
-  ris, err = jack.jackknife_for_secondary(U, blocksize, [square, data[2]], [id, data[2]])
+  ris, err = jack.jackknife_for_secondary(U, blocksize, [square, data[0]], [id, data[0]])
   print(ris, err, end=' ')
 
   #xi2nd
-  ris, err = jack.jackknife_for_secondary(xi2nd, blocksize, [id, data[2]], [id, data[3]])
+  ris, err = jack.jackknife_for_secondary(xi2nd, blocksize, [id, data[0]], [id, data[1]])
   print(ris, err, end=' ')
 
   print('')

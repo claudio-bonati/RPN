@@ -1,5 +1,5 @@
 AC_PREREQ([2.59])
-AC_INIT([rpn], [0.1.0], [claudio.bonati82@gmail.com])
+AC_INIT([rpn], [0.2.0], [claudio.bonati82@gmail.com])
 AM_INIT_AUTOMAKE(subdir-objects)
 AC_CONFIG_SRCDIR([./include/macro.h])
 AC_CONFIG_HEADERS([config.h])
@@ -87,7 +87,7 @@ fi
 if test x${N_f} = x; then
   AC_MSG_WARN([ 
    *****
-   No chosen value for N_f: using the default N_c=2
+   No chosen value for N_f: using the default N_f=2
    ***** 
    ])
   AC_DEFINE_UNQUOTED(NFLAVOUR, 2, [Number of flavours])

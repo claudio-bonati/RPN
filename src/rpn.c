@@ -57,8 +57,14 @@ void real_main(char *in_file)
     // count starts from 1 to avoid problems using %
     for(count=1; count < param.d_sample + 1; count++)
        {
-       update(&GC, &geo, &param, &acc_local);
-//       update_without_links(&GC, &geo, &param, &acc_local);
+       if(param.d_beta>0)
+         {
+         update(&GC, &geo, &param, &acc_local);
+         }
+       else
+         {
+         update_without_links(&GC, &geo, &param, &acc_local);
+         }
 
        if(count>param.d_thermal)
          {
@@ -84,7 +90,7 @@ void real_main(char *in_file)
 
        if(count % param.d_measevery ==0 && count >= param.d_thermal)
          {
-         perform_measures(&GC, &geo, &param, datafilep);
+         perform_measures(&GC, &param, datafilep);
          }
 
        // save configuration for backup

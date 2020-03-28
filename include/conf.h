@@ -62,7 +62,6 @@ void compute_flavour_observables(Conf const * const GC,
                                  double *tildeG0,
                                  double *tildeGminp);
 void perform_measures(Conf * GC,
-                      Geometry const * const geo,
                       GParam const * const param,
                       FILE *datafilep);
 
