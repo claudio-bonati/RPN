@@ -90,7 +90,7 @@ void real_main(char *in_file)
 
        if(count % param.d_measevery ==0 && count >= param.d_thermal)
          {
-         perform_measures(&GC, &param, datafilep);
+         perform_measures(&GC, &param, &geo, datafilep);
          }
 
        // save configuration for backup

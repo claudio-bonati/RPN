@@ -7,6 +7,7 @@
 typedef struct Geometry {
    long **d_nnp;      // d_nnp_loc[r][i] = next neighbour (on the local lattice) in dir.  i of the site r
    long **d_nnm;      // d_nnm_loc[r][i] = next neighbour (on the local lattice) in dir. -i of the site r
+   int *d_parity;     // d_parity[r] is the parity of the site (odd or even)
 } Geometry;
 
 // these are the functions to be used in shwitching between different indices
@@ -30,6 +31,12 @@ inline long nnp(Geometry const * const geo, long r, int i)
 inline long nnm(Geometry const * const geo, long r, int i)
   {
   return geo->d_nnm[r][i];
+  }
+
+// parity
+inline int parity(Geometry const * const geo, long r)
+  {
+  return geo->d_parity[r];
   }
 
 // for debug

@@ -22,7 +22,7 @@ void init_indexing_lexeo(void)
 // initialize geometry
 void init_geometry(Geometry *geo, GParam const * const param)
   {
-  int i, value, valuep, valuem, err;
+  int i, value, valuep, valuem, err, parity;
   long r, rm, rp;
   int cartcoord[STDIM];
 
@@ -54,14 +54,27 @@ void init_geometry(Geometry *geo, GParam const * const param)
        exit(EXIT_FAILURE);
        }
      }
+  err=posix_memalign((void**)&(geo->d_parity), (size_t)INT_ALIGN, (size_t) param->d_volume * sizeof(int));
+  if(err!=0)
+    {
+    fprintf(stderr, "Problems in allocating the geometry! (%s, %d)\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+    }
 
   // INITIALIZE
   for(r=0; r<param->d_volume; r++)
      {
      si_to_cart(cartcoord, r, param);
 
+     parity=1;
+
      for(i=0; i<STDIM; i++)
         {
+        if(cartcoord[i]%2!=0)
+          {
+          parity*=-1;
+          }
+
         value=cartcoord[i];
 
         valuep=value+1;
@@ -84,6 +97,8 @@ void init_geometry(Geometry *geo, GParam const * const param)
 
         cartcoord[i]=value;
         }
+
+     geo->d_parity[r]=parity;
      } // end of loop on r
 
   #ifdef DEBUG
@@ -104,6 +119,7 @@ void free_geometry(Geometry *geo, GParam const * const param)
      }
   free(geo->d_nnp);
   free(geo->d_nnm);
+  free(geo->d_parity);
   }
 
 
@@ -112,6 +128,7 @@ long nnp(Geometry const * const geo, long r, int i);
 
 long nnm(Geometry const * const geo, long r, int i);
 
+int parity(Geometry const * const geo, long r);
 
 void test_geometry(Geometry const * const geo, GParam const * const param)
   {

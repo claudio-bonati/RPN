@@ -13,7 +13,7 @@ Z = exp( \beta * \sum_{x,\mu} [ phi_{x}^t\cdot \phi_{x+\mu} ]^2 )
 where \phi_{x} are R^N vectors associated to sites which satisfy the constraint
 \|\phi_{x}\|=1.
 
-For the ferromagnetic case this action can be rewritten as
+For the ferromagnetic (\beta>0) case this action can be rewritten as
 
 Z=exp(\sum_{x,\mu} [ - U_{x,\mu}^2/beta + 2 U_{x,\mu} * phi_{x}^t\cdot \phi_{x+\mu} ] )
 

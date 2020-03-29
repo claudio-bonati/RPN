@@ -77,23 +77,25 @@ void rand_rot_Vec(Vec * restrict A, Vec const * const restrict B, double epsilon
   __assume_aligned(&(B->comp), DOUBLE_ALIGN);
   #endif
 
-  int i, j;
+  int i, j, counter;
   double theta, tmp1, tmp2;
 
   equal_Vec(A, B);
 
-  for(i=0; i<NFLAVOUR-1; i++)
+  for(counter=0; counter<NFLAVOUR*NFLAVOUR/2; counter++)
      {
-     for(j=i+1; j<NFLAVOUR; j++)
-        {
-        tmp1=A->comp[i];
-        tmp2=A->comp[j];
+     i=(int)(casuale()*((double)NFLAVOUR - MIN_VALUE));
+     j=(int)(casuale()*((double)NFLAVOUR - MIN_VALUE));
+     if(i!=j)
+       {
+       tmp1=A->comp[i];
+       tmp2=A->comp[j];
 
-        theta=(2.0*casuale()-1.0)*epsilon*PI;
+       theta=(2.0*casuale()-1.0)*epsilon*PI;
 
-        A->comp[i]=  cos(theta)*tmp1 +sin(theta)*tmp2;
-        A->comp[j]= -sin(theta)*tmp1 +cos(theta)*tmp2;
-        }
+       A->comp[i]=  cos(theta)*tmp1 +sin(theta)*tmp2;
+       A->comp[j]= -sin(theta)*tmp1 +cos(theta)*tmp2;
+       }
      }
   }
 

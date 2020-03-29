@@ -164,6 +164,7 @@ void compute_flavour_observables(Conf const * const GC,
 
 void perform_measures(Conf *GC,
                       GParam const * const param,
+                      Geometry const * const geo,
                       FILE *datafilep)
    {
    long r;
@@ -177,6 +178,16 @@ void perform_measures(Conf *GC,
       {
       init_FMatrix(&(GC->Qh[r]), &(GC->phi[r]));
       }
+
+   if(param->d_beta<0)  // antiferromagnetic case
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(r)
+   #endif
+   for(r=0; r<(param->d_volume); r++)
+      {
+      times_equal_real_FMatrix(&(GC->Qh[r]), geo->d_parity[r]);
+      }
+
 
    compute_flavour_observables(GC,
                                param,

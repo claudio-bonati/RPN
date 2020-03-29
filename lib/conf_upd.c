@@ -316,6 +316,11 @@ int metropolis_for_phi_without_links(Conf *GC,
 
   rand_rot_Vec(&new_vector, &old_vector, param->d_epsilon_metro);
 
+  if(casuale()<0.5)
+    {
+    times_equal_real_Vec(&new_vector, -1.0);
+    }
+
   new_energy=0.0;
   for(i=0; i<STDIM; i++)
      {
