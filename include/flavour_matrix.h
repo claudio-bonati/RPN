@@ -251,10 +251,10 @@ inline double retr_FMatrix(FMatrix const * const restrict A)
   tr=0.0;
   for(i=0; i<NFLAVOUR; i++)
      {
-     tr+=A->comp[m(i,i)];
+     tr+=creal(A->comp[m(i,i)]);
      }
 
-  return creal(tr);
+  return tr;
   }
 
 
