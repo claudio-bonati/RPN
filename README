@@ -6,7 +6,7 @@
 ** ENERGY
 *****************************************************
 
-This partition function is
+The partition function is written as
 
 Z = exp( \beta * \sum_{x,\mu} [ phi_{x}^t\cdot \phi_{x+\mu} ]^2 )
 
