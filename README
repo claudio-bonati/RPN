@@ -37,12 +37,14 @@ and the use of OpenMP can by activated by using
 
 --enable-use-openmp     to enable the use of openmp
 
-
 After the configuration, the compilation is performed as usual by
 make
 
 Defining the macro DEBUG several sanity checks are activated, which can
 slow-down the algorithm.
+
+Calling the executable without input file the configuration options are shown
+and the template file "template_input.in" is produced.
 
 
 ** INPUT FILE AND SOME CONVENTIONS
@@ -51,5 +53,30 @@ slow-down the algorithm.
 A template input file is created when calling the executable without input file
 and everything following # (up to carriage return) in the input file is
 interpreted as a comment.
+
+** OBSERVABLES
+*****************************************************
+
+The data file produced consists of an header first line (with written the
+space-time dimension and the lattice sizes) and a sequence of lines each
+composed of two columns.
+
+Let the N_fxN_f symmetric traceless matrix Q be defined by
+
+Q_{ij} = \phi_i \phi_j - (1/N_f) \delta_{ij} (\sum_a \phi_a \phi_a)
+
+or by its staggered analogue for the anti-ferromagnetic \beta<0 case. In the
+first column of the output file the value
+
+Tr[(\sum_x Q_x)(\sum_y Q_y)]/volume
+
+is written, which is the magnetic suceptibility. In the second column 
+the value of 
+
+ReTr[(\sum_x Q_xe^{ipx})(\sum_y Q_ye^{-ipy)]/volume
+
+is printed, where p=(0, 2*pi/L_1, 0, ... 0) is the minumum momentum in
+direction 1. This value can be used to extract the second momentum correlation
+length.
 
 
