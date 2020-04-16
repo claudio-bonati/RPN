@@ -97,6 +97,7 @@ void init_conf(Conf *GC, GParam const * const param)
   }
 
 
+// initialize the configuration for the case of the Z_2 links
 void init_conf_z2(Conf *GC, GParam const * const param)
   {
   long r, j;

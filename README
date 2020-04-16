@@ -26,6 +26,7 @@ Z = \sum exp( \beta * \sum_{x,\mu} [ phi_{x}^t\cdot \phi_{x+\mu} * U_{x,\mu}] )
 
 where U_{x,\mu} can be either +1 or -1
 
+
 ** CONFIGURE PARAMETERS
 *****************************************************
 

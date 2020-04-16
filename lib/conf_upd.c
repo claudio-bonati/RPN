@@ -565,4 +565,5 @@ void update_z2(Conf * GC,
    GC->update_index++;
    }
 
+
 #endif
