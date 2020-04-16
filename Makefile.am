@@ -1,4 +1,4 @@
-bin_PROGRAMS = rpn
+bin_PROGRAMS = rpn rpn_z2
 
 dSFMT = ./include/dSFMT-common.h \
         ./include/dSFMT.h \
@@ -49,6 +49,17 @@ rpn_SOURCES=./src/rpn.c \
             ./include/macro.h \
             $(random) \
             $(vec)
+
+rpn_z2_SOURCES=./src/rpn_z2.c \
+               $(conf) \
+               $(dSFMT) \
+               $(endian) \
+               $(flavourmatrix) \
+               $(geometry) \
+               $(gparam) \
+               ./include/macro.h \
+               $(random) \
+               $(vec)
 
 AM_CFLAGS = -std=c99 -O2 -Wall -Wextra -Werror -pedantic -Wconversion @OPENMP_CFLAGS@
 

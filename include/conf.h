@@ -25,6 +25,8 @@ typedef struct Conf {
 // in conf_def.c
 void init_conf(Conf *GC,
                GParam const * const param);
+void init_conf_z2(Conf *GC,
+                  GParam const * const param);
 void read_conf(Conf *GC,
                GParam const * const param);
 void free_conf(Conf *GC,
@@ -87,7 +89,6 @@ void calcstaples_for_phi(Conf *GC,
                          Geometry const * const geo,
                          long r,
                          Vec *staple);
-
 void overrelaxation_for_phi(Conf *GC,
                             Geometry const * const geo,
                             long r);
@@ -99,6 +100,7 @@ void update(Conf * GC,
             Geometry const * const geo,
             GParam const * const param,
             double *acc);
+
 int metropolis_for_phi_without_links(Conf *GC,
                                      Geometry const * const geo,
                                      GParam const * const param,
@@ -108,5 +110,18 @@ void update_without_links(Conf * GC,
                           GParam const * const param,
                           double *acc);
 
+void metropolis_for_link_z2(Conf *GC,
+                            Geometry const * const geo,
+                            GParam const * const param,
+                            long r,
+                            int i);
+int metropolis_for_phi_z2(Conf *GC,
+                          Geometry const * const geo,
+                          GParam const * const param,
+                          long r);
+void update_z2(Conf * GC,
+               Geometry const * const geo,
+               GParam const * const param,
+               double *acc);
 
 #endif

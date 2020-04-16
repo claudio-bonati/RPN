@@ -76,7 +76,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = rpn$(EXEEXT)
+bin_PROGRAMS = rpn$(EXEEXT) rpn_z2$(EXEEXT)
 subdir = .
 DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
@@ -110,6 +110,12 @@ am_rpn_OBJECTS = ./src/rpn.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
 	$(am__objects_6) $(am__objects_7) $(am__objects_8)
 rpn_OBJECTS = $(am_rpn_OBJECTS)
 rpn_LDADD = $(LDADD)
+am_rpn_z2_OBJECTS = ./src/rpn_z2.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
+	$(am__objects_8)
+rpn_z2_OBJECTS = $(am_rpn_z2_OBJECTS)
+rpn_z2_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -138,8 +144,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(rpn_SOURCES)
-DIST_SOURCES = $(rpn_SOURCES)
+SOURCES = $(rpn_SOURCES) $(rpn_z2_SOURCES)
+DIST_SOURCES = $(rpn_SOURCES) $(rpn_z2_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -325,6 +331,17 @@ rpn_SOURCES = ./src/rpn.c \
             $(random) \
             $(vec)
 
+rpn_z2_SOURCES = ./src/rpn_z2.c \
+               $(conf) \
+               $(dSFMT) \
+               $(endian) \
+               $(flavourmatrix) \
+               $(geometry) \
+               $(gparam) \
+               ./include/macro.h \
+               $(random) \
+               $(vec)
+
 AM_CFLAGS = -std=c99 -O2 -Wall -Wextra -Werror -pedantic -Wconversion @OPENMP_CFLAGS@
 CLEANFILES = dati.dat log.dat dati.log conf.dat* template_input.in 
 all: config.h
@@ -459,6 +476,12 @@ lib/$(DEPDIR)/$(am__dirstamp):
 rpn$(EXEEXT): $(rpn_OBJECTS) $(rpn_DEPENDENCIES) $(EXTRA_rpn_DEPENDENCIES) 
 	@rm -f rpn$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(rpn_OBJECTS) $(rpn_LDADD) $(LIBS)
+./src/rpn_z2.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
+
+rpn_z2$(EXEEXT): $(rpn_z2_OBJECTS) $(rpn_z2_DEPENDENCIES) $(EXTRA_rpn_z2_DEPENDENCIES) 
+	@rm -f rpn_z2$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(rpn_z2_OBJECTS) $(rpn_z2_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -479,6 +502,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./lib/$(DEPDIR)/random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./lib/$(DEPDIR)/vec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/rpn.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/rpn_z2.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
