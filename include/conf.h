@@ -67,7 +67,10 @@ void perform_measures(Conf * GC,
                       GParam const * const param,
                       Geometry const * const geo,
                       FILE *datafilep);
-
+void perform_measures_z2(Conf * GC,
+                         GParam const * const param,
+                         Geometry const * const geo,
+                         FILE *datafilep);
 
 // in gauge_conf_upd.c
 void metropolis_for_link(Conf *GC,

@@ -83,7 +83,7 @@ void real_main(char *in_file)
 
        if(count % param.d_measevery ==0 && count >= param.d_thermal)
          {
-         perform_measures(&GC, &param, &geo, datafilep);
+         perform_measures_z2(&GC, &param, &geo, datafilep);
          }
 
        // save configuration for backup

@@ -202,6 +202,47 @@ void perform_measures(Conf *GC,
    }
 
 
+void perform_measures_z2(Conf *GC,
+                         GParam const * const param,
+                         Geometry const * const geo,
+                         FILE *datafilep)
+   {
+   long r;
+
+   double tildeG0, tildeGminp, plaq;
+
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(r)
+   #endif
+   for(r=0; r<(param->d_volume); r++)
+      {
+      init_FMatrix(&(GC->Qh[r]), &(GC->phi[r]));
+      }
+
+   if(param->d_beta<0)  // antiferromagnetic case
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(r)
+   #endif
+   for(r=0; r<(param->d_volume); r++)
+      {
+      times_equal_real_FMatrix(&(GC->Qh[r]), geo->d_parity[r]);
+      }
+
+
+   compute_flavour_observables(GC,
+                               param,
+                               &tildeG0,
+                               &tildeGminp);
+
+   plaq=plaquette(GC, geo, param);
+
+   fprintf(datafilep, "%.12g %.12g %.12g ", tildeG0, tildeGminp, plaq);
+
+   fprintf(datafilep, "\n");
+
+   fflush(datafilep);
+   }
+
 
 #endif
 
