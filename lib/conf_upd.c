@@ -96,7 +96,7 @@ void calcstaples_for_phi(Conf *GC,
   }
 
 
-// perform an update of the higgs field with overrelaxation (ok also in the Z_2 link case)
+// perform an update of the phi field with overrelaxation (ok also in the Z_2 link case)
 void overrelaxation_for_phi(Conf *GC,
                             Geometry const * const geo,
                             long r)
@@ -216,7 +216,7 @@ void update(Conf * GC,
          }
       }
 
-   // overrelax links and higgs
+   // overrelax links and phi
    for(j=0; j<param->d_overrelax; j++)
       {
       for(dir=0; dir<STDIM; dir++)
@@ -502,7 +502,108 @@ void update_z2(Conf * GC,
          }
       }
 
-   // overrelax higgs
+   // overrelax phi
+   for(j=0; j<param->d_overrelax; j++)
+      {
+      #ifdef OPENMP_MODE
+      #pragma omp parallel for num_threads(NTHREADS) private(r)
+      #endif
+      for(r=0; r<(param->d_volume)/2; r++)
+         {
+         overrelaxation_for_phi(GC, geo, r);
+         }
+
+      #ifdef OPENMP_MODE
+      #pragma omp parallel for num_threads(NTHREADS) private(r)
+      #endif
+      for(r=(param->d_volume)/2; r<(param->d_volume); r++)
+         {
+         overrelaxation_for_phi(GC, geo, r);
+         }
+      }
+
+   // metropolis on phi
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(r)
+   #endif
+   for(r=0; r<(param->d_volume)/2; r++)
+      {
+      a[r]+=metropolis_for_phi_z2(GC, geo, param, r);
+      }
+
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(r)
+   #endif
+   for(r=(param->d_volume)/2; r<(param->d_volume); r++)
+      {
+      a[r]+=metropolis_for_phi_z2(GC, geo, param, r);
+      }
+
+   // acceptance computation
+   asum=0;
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for reduction(+:asum) private(r)
+   #endif
+   for(r=0; r<param->d_volume; r++)
+      {
+      asum+=(long)a[r];
+      }
+
+   *acc=((double)asum)*param->d_inv_vol;
+
+   // final unitarization
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(r)
+   #endif
+   for(r=0; r<(param->d_volume); r++)
+      {
+      unitarize_Vec(&(GC->phi[r]));
+      }
+
+   free(a);
+
+   GC->update_index++;
+   }
+
+
+// perform a complete update with Z_2 links
+void update_on_z2bc(Conf * GC,
+                    Geometry const * const geo,
+                    GParam const * const param,
+                    double *acc)
+   {
+   int err, *a;
+   long r, asum;
+   int j, dir;
+
+   err=posix_memalign((void**)&a, (size_t)INT_ALIGN, (size_t) param->d_volume * sizeof(int));
+   if(err!=0)
+     {
+     fprintf(stderr, "Problems in allocating a vector! (%s, %d)\n", __FILE__, __LINE__);
+     exit(EXIT_FAILURE);
+     }
+
+   for(r=0; r<param->d_volume; r++)
+      {
+      a[r]=0;
+      }
+
+   // metropolis on Z_2 links on the boundary
+   for(dir=0; dir<STDIM; dir++)
+      {
+      #ifdef OPENMP_MODE
+      #pragma omp parallel for num_threads(NTHREADS) private(r)
+      #endif
+      for(r=0; r<(param->d_volume); r++)
+         {
+         if(GC->bclink[r][dir]==0)
+           {
+           metropolis_for_link_z2(GC, geo, param, r, dir);
+           }
+         }
+      }
+
+   // overrelax phi
    for(j=0; j<param->d_overrelax; j++)
       {
       #ifdef OPENMP_MODE

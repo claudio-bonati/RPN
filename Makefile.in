@@ -76,7 +76,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = rpn$(EXEEXT) rpn_z2$(EXEEXT)
+bin_PROGRAMS = rpn$(EXEEXT) rpn_z2$(EXEEXT) on_z2bc$(EXEEXT)
 subdir = .
 DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
@@ -105,6 +105,12 @@ am__objects_5 = ./lib/geometry.$(OBJEXT)
 am__objects_6 = ./lib/gparam.$(OBJEXT)
 am__objects_7 = ./lib/random.$(OBJEXT)
 am__objects_8 = ./lib/vec.$(OBJEXT)
+am_on_z2bc_OBJECTS = ./src/on_z2bc.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
+	$(am__objects_8)
+on_z2bc_OBJECTS = $(am_on_z2bc_OBJECTS)
+on_z2bc_LDADD = $(LDADD)
 am_rpn_OBJECTS = ./src/rpn.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
 	$(am__objects_6) $(am__objects_7) $(am__objects_8)
@@ -144,8 +150,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(rpn_SOURCES) $(rpn_z2_SOURCES)
-DIST_SOURCES = $(rpn_SOURCES) $(rpn_z2_SOURCES)
+SOURCES = $(on_z2bc_SOURCES) $(rpn_SOURCES) $(rpn_z2_SOURCES)
+DIST_SOURCES = $(on_z2bc_SOURCES) $(rpn_SOURCES) $(rpn_z2_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -342,6 +348,17 @@ rpn_z2_SOURCES = ./src/rpn_z2.c \
                $(random) \
                $(vec)
 
+on_z2bc_SOURCES = ./src/on_z2bc.c \
+                $(conf) \
+                $(dSFMT) \
+                $(endian) \
+                $(flavourmatrix) \
+                $(geometry) \
+                $(gparam) \
+                ./include/macro.h \
+                $(random) \
+                $(vec)
+
 AM_CFLAGS = -std=c99 -O2 -Wall -Wextra -Werror -pedantic -Wconversion @OPENMP_CFLAGS@
 CLEANFILES = dati.dat log.dat dati.log conf.dat* template_input.in 
 all: config.h
@@ -446,7 +463,8 @@ src/$(am__dirstamp):
 src/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) ./src/$(DEPDIR)
 	@: > src/$(DEPDIR)/$(am__dirstamp)
-./src/rpn.$(OBJEXT): src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+./src/on_z2bc.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
 lib/$(am__dirstamp):
 	@$(MKDIR_P) ./lib
 	@: > lib/$(am__dirstamp)
@@ -472,6 +490,11 @@ lib/$(DEPDIR)/$(am__dirstamp):
 ./lib/random.$(OBJEXT): lib/$(am__dirstamp) \
 	lib/$(DEPDIR)/$(am__dirstamp)
 ./lib/vec.$(OBJEXT): lib/$(am__dirstamp) lib/$(DEPDIR)/$(am__dirstamp)
+
+on_z2bc$(EXEEXT): $(on_z2bc_OBJECTS) $(on_z2bc_DEPENDENCIES) $(EXTRA_on_z2bc_DEPENDENCIES) 
+	@rm -f on_z2bc$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(on_z2bc_OBJECTS) $(on_z2bc_LDADD) $(LIBS)
+./src/rpn.$(OBJEXT): src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 
 rpn$(EXEEXT): $(rpn_OBJECTS) $(rpn_DEPENDENCIES) $(EXTRA_rpn_DEPENDENCIES) 
 	@rm -f rpn$(EXEEXT)
@@ -501,6 +524,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./lib/$(DEPDIR)/gparam.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./lib/$(DEPDIR)/random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./lib/$(DEPDIR)/vec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/on_z2bc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/rpn.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./src/$(DEPDIR)/rpn_z2.Po@am__quote@
 

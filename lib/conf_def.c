@@ -188,6 +188,136 @@ void init_conf_z2(Conf *GC, GParam const * const param)
   }
 
 
+// initialize the configuration for the case of the ON model with z2 b.c.
+void init_conf_on_z2bc(Conf *GC, GParam const * const param)
+  {
+  long r, j;
+  int err, cartcoord[STDIM];
+
+  // allocate the lattice
+  err=posix_memalign((void**) &(GC->phi), (size_t) DOUBLE_ALIGN, (size_t) param->d_volume * sizeof(Vec));
+  if(err!=0)
+    {
+    fprintf(stderr, "Problems in allocating the lattice! (%s, %d)\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+    }
+
+  err=posix_memalign((void**) &(GC->link), (size_t) DOUBLE_ALIGN, (size_t) param->d_volume * sizeof(double *));
+  if(err!=0)
+    {
+    fprintf(stderr, "Problems in allocating the lattice! (%s, %d)\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+    }
+  for(r=0; r<(param->d_volume); r++)
+     {
+     err=posix_memalign((void**)&(GC->link[r]), (size_t) DOUBLE_ALIGN, (size_t )STDIM * sizeof(double));
+     if(err!=0)
+       {
+       fprintf(stderr, "Problems in allocating the lattice! (%s, %d)\n", __FILE__, __LINE__);
+       exit(EXIT_FAILURE);
+       }
+     }
+
+  err=posix_memalign((void**) &(GC->bclink), (size_t) INT_ALIGN, (size_t) param->d_volume * sizeof(int *));
+  if(err!=0)
+    {
+    fprintf(stderr, "Problems in allocating the lattice! (%s, %d)\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+    }
+  for(r=0; r<(param->d_volume); r++)
+     {
+     err=posix_memalign((void**)&(GC->bclink[r]), (size_t) INT_ALIGN, (size_t )STDIM * sizeof(int));
+     if(err!=0)
+       {
+       fprintf(stderr, "Problems in allocating the lattice! (%s, %d)\n", __FILE__, __LINE__);
+       exit(EXIT_FAILURE);
+       }
+     }
+
+  err=posix_memalign((void**) &(GC->Qh), (size_t) DOUBLE_ALIGN, (size_t) param->d_volume * sizeof(FMatrix));
+  if(err!=0)
+    {
+    fprintf(stderr, "Problems in allocating the lattice! (%s, %d)\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+    }
+
+  // initialize bc links (=0 for links on the boundary, =1 else)
+  for(r=0; r<param->d_volume; r++)
+     {
+     si_to_cart(cartcoord, r, param);
+     for(j=0; j<STDIM; j++)
+        {
+        if(cartcoord[j]==param->d_size[j]-1)
+          {
+          GC->bclink[r][j]=0;
+          }
+        else
+          {
+          GC->bclink[r][j]=1;
+          }
+        }
+     }
+
+  // initialize lattice
+  if(param->d_start==0) // ordered start
+    {
+    Vec v1, v2;
+
+    GC->update_index=0;
+
+    one_Vec(&v1);
+
+    for(r=0; r<(param->d_volume); r++)
+       {
+       rand_rot_Vec(&v2, &v1, 0.05);
+       equal_Vec(&(GC->phi[r]), &v2);
+
+       for(j=0; j<STDIM; j++)
+          {
+          GC->link[r][j]=1.0;
+          }
+       }
+    }
+
+  if(param->d_start==1)  // random start
+    {
+    Vec v1;
+
+    GC->update_index=0;
+
+    for(r=0; r<(param->d_volume); r++)
+       {
+       rand_vec_Vec(&v1);
+       equal_Vec(&(GC->phi[r]), &v1);
+
+       for(j=0; j<STDIM; j++)
+          {
+          if(GC->bclink[r][j]==0)
+            {
+            if(casuale()<0.5)
+              {
+              GC->link[r][j]=1.0;
+              }
+            else
+              {
+              GC->link[r][j]=-1.0;
+              }
+            }
+          else
+            {
+            GC->link[r][j]=1.0;
+            }
+          }
+       }
+    }
+
+  if(param->d_start==2) // initialize from stored conf
+    {
+    read_conf(GC, param);
+    }
+  }
+
+
 void read_conf(Conf *GC, GParam const * const param)
   {
   FILE *fp;

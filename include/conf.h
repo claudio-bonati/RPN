@@ -17,6 +17,7 @@ typedef struct Conf {
 
   double **link;    // [volume] [STDIM]
   Vec *phi;         // [volume]
+  int **bclink;     // [volume] [STDIM]
 
   FMatrix *Qh;      // [volume]
   } Conf;
@@ -27,6 +28,8 @@ void init_conf(Conf *GC,
                GParam const * const param);
 void init_conf_z2(Conf *GC,
                   GParam const * const param);
+void init_conf_on_z2bc(Conf *GC,
+                      GParam const * const param);
 void read_conf(Conf *GC,
                GParam const * const param);
 void free_conf(Conf *GC,
@@ -123,6 +126,11 @@ int metropolis_for_phi_z2(Conf *GC,
                           GParam const * const param,
                           long r);
 void update_z2(Conf * GC,
+               Geometry const * const geo,
+               GParam const * const param,
+               double *acc);
+
+void update_on_z2bc(Conf * GC,
                Geometry const * const geo,
                GParam const * const param,
                double *acc);

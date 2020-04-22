@@ -33,3 +33,4 @@ lib/conf_upd.c
 include/flavour_matrix.h
 lib/flavour_matrix.c
 src/rpn_z2.c
+src/on_z2bc.c
