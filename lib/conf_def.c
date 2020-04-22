@@ -8,6 +8,7 @@
 #include<stdlib.h>
 #include<string.h>
 
+#include"../include/endianness.h"
 #include"../include/conf.h"
 #include"../include/endianness.h"
 #include"../include/flavour_matrix.h"
@@ -402,6 +403,7 @@ void compute_md5sum_conf(char *res, Conf const * const GC, GParam const * const 
   MD5_CTX mdContext;
   unsigned char c[MD5_DIGEST_LENGTH];
   long si, lex;
+  double a;
   int mu, k;
 
   MD5_Init(&mdContext);
@@ -411,12 +413,22 @@ void compute_md5sum_conf(char *res, Conf const * const GC, GParam const * const 
 
      for(k=0; k<NFLAVOUR; k++)
         {
-        MD5_Update(&mdContext, &((GC->phi[si]).comp[k]), sizeof(double));
+        a=(GC->phi[si]).comp[k];
+        if(endian()==0)
+          {
+          SwapBytesDouble(&a);
+          }
+        MD5_Update(&mdContext, &a, sizeof(double));
         }
 
      for(mu=0; mu<STDIM; mu++)
         {
-        MD5_Update(&mdContext, &(GC->link[si][mu]), sizeof(double));
+        a=GC->link[si][mu];
+        if(endian()==0)
+          {
+          SwapBytesDouble(&a);
+          }
+        MD5_Update(&mdContext, &a, sizeof(double));
         }
      }
   MD5_Final(c, &mdContext);
