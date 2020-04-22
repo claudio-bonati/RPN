@@ -32,6 +32,8 @@ void init_conf_on_z2bc(Conf *GC,
                       GParam const * const param);
 void read_conf(Conf *GC,
                GParam const * const param);
+void free_z2bc(Conf *GC,
+               GParam const * const param);
 void free_conf(Conf *GC,
                GParam const * const param);
 void write_conf_on_file_with_name(Conf const * const GC,

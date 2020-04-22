@@ -422,6 +422,18 @@ void read_conf(Conf *GC, GParam const * const param)
   }
 
 
+void free_z2bc(Conf *GC, GParam const * const param)
+  {
+  long i;
+
+  for(i=0; i<(param->d_volume); i++)
+     {
+     free(GC->bclink[i]);
+     }
+  free(GC->bclink);
+  }
+
+
 void free_conf(Conf *GC, GParam const * const param)
   {
   long i;

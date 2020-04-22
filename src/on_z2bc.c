@@ -117,6 +117,7 @@ void real_main(char *in_file)
     print_parameters(&param, time1, time2, acc);
 
     // free configuration
+    free_z2bc(&GC, &param);
     free_conf(&GC, &param);
 
     // free geometry
