@@ -95,6 +95,9 @@ if __name__=="__main__":
   if(numberline>2):
     ris, err = jack.jackknife_for_primary(id, data[2], blocksize)
     print(ris, err, end=' ')
+   
+    ris, err = jack.jackknife_for_secondary(susc, blocksize, [square, data[2]], [id, data[2]])
+    print(ris, err, end=' ')
 
   print('')
 
