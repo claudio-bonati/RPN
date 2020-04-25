@@ -72,6 +72,9 @@ if __name__=="__main__":
 
   # data acquisition
   indata=np.loadtxt(infile, skiprows=therm, dtype=np.float)
+
+  numberline=len(indata[0])
+
   data=np.transpose(indata)     #column ordered
 
   #print(blocksize, end=' ')
@@ -87,6 +90,11 @@ if __name__=="__main__":
   #xi2nd
   ris, err = jack.jackknife_for_secondary(xi2nd, blocksize, [id, data[0]], [id, data[1]])
   print(ris, err, end=' ')
+
+  #plaquette if present
+  if(numberline>2):
+    ris, err = jack.jackknife_for_primary(id, data[2], blocksize)
+    print(ris, err, end=' ')
 
   print('')
 

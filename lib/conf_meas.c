@@ -365,16 +365,17 @@ void perform_measures_z2(Conf *GC,
 
    fprintf(datafilep, "%.12g %.12g %.12g ", tildeG0, tildeGminp, plaq);
 
+   /*
    // wilson loop measures
    int i;
-   double wl1, wl2;
+   double wl;
 
-   for(i=2; i<5; i++)
+   for(i=2; i<7; i++)
       {
-      wl1=wilsonloop(GC, geo, param, i, i);
-      wl2=wilsonloop(GC, geo, param, i, i+1);
-      fprintf(datafilep, "%.12g %.12g ", wl1, wl2);
+      wl=wilsonloop(GC, geo, param, i, i);
+      fprintf(datafilep, "%.12g ", wl);
       }
+   */
 
    fprintf(datafilep, "\n");
 
