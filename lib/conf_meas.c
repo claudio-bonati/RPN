@@ -13,11 +13,11 @@
 #include"../include/conf.h"
 
 // computation of the plaquette in position r and positive directions i,j
-double plaquettep(Conf const * const GC,
-                  Geometry const * const geo,
-                  long r,
-                  int i,
-                  int j)
+double plaquette_single(Conf const * const GC,
+                        Geometry const * const geo,
+                        long r,
+                        int i,
+                        int j)
    {
 
 //
@@ -55,16 +55,21 @@ double plaquette(Conf const * const GC,
    #endif
    for(r=0; r<(param->d_volume); r++)
       {
+      double tmp;
       int i, j;
+
       i=0;
+      tmp=0.0;
      
       for(i=0; i<STDIM; i++)
          {
          for(j=i+1; j<STDIM; j++)
             {
-            ris+=plaquettep(GC, geo, r, i, j);
+            tmp+=plaquette_single(GC, geo, r, i, j);
             }
          }
+
+      ris+=tmp;
       }
 
    ris*=param->d_inv_vol;
@@ -101,6 +106,96 @@ double polyakov(Conf const * const GC,
       }
 
    ris*=param->d_inv_vol;
+
+   return ris;
+   }
+
+
+// L1xL2 wilson loop in position r with directions dir1 and dir2
+double wilsonloop_single(Conf const * const GC,
+                         Geometry const * const geo,
+                         long r,
+                         int dir1,
+                         int L1,
+                         int dir2,
+                         int L2)
+   {
+//
+//       ^ dir2
+//       |   (4)
+//       +--->---+           // note that the gauge group is real and abelian!
+//       |       |
+//   (3) ^       ^ (2)
+//       |       |
+//       +--->---+---> dir1
+//       r   (1)
+//
+
+   int i;
+   long rn;
+   double ris=1.0;
+
+   rn=r;
+   for(i=0; i<L1; i++)// 1
+      {
+      ris*=GC->link[rn][dir1];
+      rn=nnp(geo, rn, dir1);
+      }
+   for(i=0; i<L2; i++)// 2
+      {
+      ris*=GC->link[rn][dir2];
+      rn=nnp(geo, rn, dir2);
+      }
+
+   rn=r;
+   for(i=0; i<L2; i++)// 3
+      {
+      ris*=GC->link[rn][dir2];
+      rn=nnp(geo, rn, dir2);
+      }
+   for(i=0; i<L1; i++)// 4
+      {
+      ris*=GC->link[rn][dir1];
+      rn=nnp(geo, rn, dir1);
+      }
+
+   return ris;
+   }
+
+
+// L1xL2 wilson loop
+double wilsonloop(Conf const * const GC,
+                  Geometry const * const geo,
+                  GParam const * const param,
+                  int L1,
+                  int L2)
+   {
+   long r;
+   double ris=0.0;
+
+   #ifdef OPENMP_MODE
+   #pragma omp parallel for num_threads(NTHREADS) private(r) reduction(+ : ris)
+   #endif
+   for(r=0; r<(param->d_volume); r++)
+      {
+      double tmp;
+      int dir1, dir2;
+
+      tmp=0.0;
+
+      for(dir1=0; dir1<STDIM-1; dir1++)
+         {
+         for(dir2=dir1+1; dir2<STDIM; dir2++)
+            {
+            tmp+=wilsonloop_single(GC, geo, r, dir1, L1, dir2, L2);
+            }
+         }
+
+      ris+=tmp;
+      }
+
+   ris*=param->d_inv_vol;
+   ris/= (double)( STDIM * (STDIM-1)/2 );
 
    return ris;
    }
@@ -269,6 +364,17 @@ void perform_measures_z2(Conf *GC,
    plaq=plaquette(GC, geo, param);
 
    fprintf(datafilep, "%.12g %.12g %.12g ", tildeG0, tildeGminp, plaq);
+
+   // wilson loop measures
+   int i;
+   double wl1, wl2;
+
+   for(i=2; i<5; i++)
+      {
+      wl1=wilsonloop(GC, geo, param, i, i);
+      wl2=wilsonloop(GC, geo, param, i, i+1);
+      fprintf(datafilep, "%.12g %.12g ", wl1, wl2);
+      }
 
    fprintf(datafilep, "\n");
 

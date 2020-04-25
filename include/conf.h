@@ -49,17 +49,29 @@ void compute_md5sum_conf(char *res,        // the lenght is 2*MD5_DIGEST_LENGTH
 
 
 // in conf_meas.c
-double plaquettep(Conf const * const GC,
-                  Geometry const * const geo,
-                  long r,
-                  int i,
-                  int j);
+double plaquette_single(Conf const * const GC,
+                        Geometry const * const geo,
+                        long r,
+                        int i,
+                        int j);
 double plaquette(Conf const * const GC,
                  Geometry const * const geo,
                  GParam const * const param);
 double polyakov(Conf const * const GC,
                 Geometry const * const geo,
                 GParam const * const param);
+double wilsonloop_single(Conf const * const GC,
+                         Geometry const * const geo,
+                         long r,
+                         int dir1,
+                         int L1,
+                         int dir2,
+                         int L2);
+double wilsonloop(Conf const * const GC,
+                  Geometry const * const geo,
+                  GParam const * const param,
+                  int L1,
+                  int L2);
 
 double higgs_interaction(Conf const * const GC,
                          Geometry const * const geo,
