@@ -93,16 +93,25 @@ if __name__=="__main__":
 
   #plaquette if present
   if(numberline>2):
-    #<plaq>
+
+    #<scalar_interaction>
     ris, err = jack.jackknife_for_primary(id, data[2], blocksize)
     print(ris, err, end=' ')
    
-    #susc plaq
+    #susc scalar int.
     ris, err = jack.jackknife_for_secondary(susc, blocksize, [square, data[2]], [id, data[2]])
     print(ris, err, end=' ')
 
+    #<plaq>
+    ris, err = jack.jackknife_for_primary(id, data[3], blocksize)
+    print(ris, err, end=' ')
+   
+    #susc plaq
+    ris, err = jack.jackknife_for_secondary(susc, blocksize, [square, data[3]], [id, data[3]])
+    print(ris, err, end=' ')
+
     # U plaq
-    ris, err = jack.jackknife_for_secondary(U, blocksize, [square, data[2]], [id, data[2]])
+    ris, err = jack.jackknife_for_secondary(U, blocksize, [square, data[3]], [id, data[3]])
     print(ris, err, end=' ')
 
   print('')

@@ -296,7 +296,7 @@ void perform_measures(Conf *GC,
    {
    long r;
 
-   double tildeG0, tildeGminp, plaq;
+   double tildeG0, tildeGminp, scalar_coupling, plaq;
 
    #ifdef OPENMP_MODE
    #pragma omp parallel for num_threads(NTHREADS) private(r)
@@ -321,9 +321,10 @@ void perform_measures(Conf *GC,
                                &tildeG0,
                                &tildeGminp);
 
+   scalar_coupling=higgs_interaction(GC, geo, param);
    plaq=plaquette(GC, geo, param);
 
-   fprintf(datafilep, "%.12g %.12g %.12g ", tildeG0, tildeGminp, plaq);
+   fprintf(datafilep, "%.12g %.12g %.12g %.12g ", tildeG0, tildeGminp, scalar_coupling, plaq);
 
    fprintf(datafilep, "\n");
 
@@ -338,7 +339,7 @@ void perform_measures_z2(Conf *GC,
    {
    long r;
 
-   double tildeG0, tildeGminp, plaq;
+   double tildeG0, tildeGminp, scalar_coupling, plaq;
 
    #ifdef OPENMP_MODE
    #pragma omp parallel for num_threads(NTHREADS) private(r)
@@ -363,9 +364,10 @@ void perform_measures_z2(Conf *GC,
                                &tildeG0,
                                &tildeGminp);
 
+   scalar_coupling=higgs_interaction(GC, geo, param);
    plaq=plaquette(GC, geo, param);
 
-   fprintf(datafilep, "%.12g %.12g %.12g ", tildeG0, tildeGminp, plaq);
+   fprintf(datafilep, "%.12g %.12g %.12g %.12g ", tildeG0, tildeGminp, scalar_coupling, plaq);
 
    /*
    // wilson loop measures
