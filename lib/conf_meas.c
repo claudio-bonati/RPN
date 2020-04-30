@@ -296,7 +296,7 @@ void perform_measures(Conf *GC,
    {
    long r;
 
-   double tildeG0, tildeGminp;
+   double tildeG0, tildeGminp, plaq;
 
    #ifdef OPENMP_MODE
    #pragma omp parallel for num_threads(NTHREADS) private(r)
@@ -321,7 +321,9 @@ void perform_measures(Conf *GC,
                                &tildeG0,
                                &tildeGminp);
 
-   fprintf(datafilep, "%.12g %.12g ", tildeG0, tildeGminp);
+   plaq=plaquette(GC, geo, param);
+
+   fprintf(datafilep, "%.12g %.12g %.12g ", tildeG0, tildeGminp, plaq);
 
    fprintf(datafilep, "\n");
 
