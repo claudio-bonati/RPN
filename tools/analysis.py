@@ -110,9 +110,5 @@ if __name__=="__main__":
     ris, err = jack.jackknife_for_secondary(susc, blocksize, [square, data[3]], [id, data[3]])
     print(ris, err, end=' ')
 
-    # U plaq
-    ris, err = jack.jackknife_for_secondary(U, blocksize, [square, data[3]], [id, data[3]])
-    print(ris, err, end=' ')
-
   print('')
 
