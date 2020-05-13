@@ -22,13 +22,13 @@ double plaquette_single(Conf const * const GC,
 
 //
 //       ^ i
-//       |   (2)
-//       +---<---+
+//       |  (2)
+//       +-------+
 //       |       |
-//   (3) V       ^ (1)
+//   3)  |       | (1)
 //       |       |
-//       +--->---+---> j
-//       r   (4)
+//       +-------+---> j
+//       r  (4)
 //
 
    double ris;
@@ -50,9 +50,6 @@ double plaquette(Conf const * const GC,
    long r;
    double ris=0.0;
 
-   #ifdef OPENMP_MODE
-   #pragma omp parallel for num_threads(NTHREADS) private(r) reduction(+ : ris)
-   #endif
    for(r=0; r<(param->d_volume); r++)
       {
       double tmp;
@@ -87,9 +84,6 @@ double polyakov(Conf const * const GC,
    long r;
    double ris=0.0;
 
-   #ifdef OPENMP_MODE
-   #pragma omp parallel for num_threads(NTHREADS) private(r) reduction(+ : ris)
-   #endif
    for(r=0; r<(param->d_volume); r++)
       {
       int i;
@@ -173,9 +167,6 @@ double wilsonloop(Conf const * const GC,
    long r;
    double ris=0.0;
 
-   #ifdef OPENMP_MODE
-   #pragma omp parallel for num_threads(NTHREADS) private(r) reduction(+ : ris)
-   #endif
    for(r=0; r<(param->d_volume); r++)
       {
       double tmp;
@@ -209,9 +200,6 @@ double higgs_interaction(Conf const * const GC,
   long r;
   double ris=0.0;
 
-  #ifdef OPENMP_MODE
-  #pragma omp parallel for num_threads(NTHREADS) private(r) reduction(+ : ris)
-  #endif
   for(r=0; r<(param->d_volume); r++)
      {
      int i;
@@ -298,22 +286,18 @@ void perform_measures(Conf *GC,
 
    double tildeG0, tildeGminp, scalar_coupling, plaq;
 
-   #ifdef OPENMP_MODE
-   #pragma omp parallel for num_threads(NTHREADS) private(r)
-   #endif
    for(r=0; r<(param->d_volume); r++)
       {
       init_FMatrix(&(GC->Qh[r]), &(GC->phi[r]));
       }
 
    if(param->d_beta<0)  // antiferromagnetic case
-   #ifdef OPENMP_MODE
-   #pragma omp parallel for num_threads(NTHREADS) private(r)
-   #endif
-   for(r=0; r<(param->d_volume); r++)
-      {
-      times_equal_real_FMatrix(&(GC->Qh[r]), geo->d_parity[r]);
-      }
+     {
+     for(r=0; r<(param->d_volume); r++)
+        {
+        times_equal_real_FMatrix(&(GC->Qh[r]), geo->d_parity[r]);
+        }
+     }
 
 
    compute_flavour_observables(GC,
@@ -341,23 +325,10 @@ void perform_measures_z2(Conf *GC,
 
    double tildeG0, tildeGminp, scalar_coupling, plaq;
 
-   #ifdef OPENMP_MODE
-   #pragma omp parallel for num_threads(NTHREADS) private(r)
-   #endif
    for(r=0; r<(param->d_volume); r++)
       {
       init_FMatrix(&(GC->Qh[r]), &(GC->phi[r]));
       }
-
-   if(param->d_beta<0)  // antiferromagnetic case
-   #ifdef OPENMP_MODE
-   #pragma omp parallel for num_threads(NTHREADS) private(r)
-   #endif
-   for(r=0; r<(param->d_volume); r++)
-      {
-      times_equal_real_FMatrix(&(GC->Qh[r]), geo->d_parity[r]);
-      }
-
 
    compute_flavour_observables(GC,
                                param,

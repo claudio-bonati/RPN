@@ -130,11 +130,15 @@ void update_without_links(Conf * GC,
                           GParam const * const param,
                           double *acc);
 
-void metropolis_for_link_z2(Conf *GC,
+double plaqstaples_for_link(Conf *GC,
                             Geometry const * const geo,
-                            GParam const * const param,
                             long r,
                             int i);
+int metropolis_for_link_z2(Conf *GC,
+                           Geometry const * const geo,
+                           GParam const * const param,
+                           long r,
+                           int i);
 int metropolis_for_phi_z2(Conf *GC,
                           Geometry const * const geo,
                           GParam const * const param,
@@ -142,11 +146,13 @@ int metropolis_for_phi_z2(Conf *GC,
 void update_z2(Conf * GC,
                Geometry const * const geo,
                GParam const * const param,
-               double *acc);
+               double *accphi,
+               double *acclink);
 
 void update_on_z2bc(Conf * GC,
                Geometry const * const geo,
                GParam const * const param,
-               double *acc);
+               double *accphi,
+               double *acclink);
 
 #endif

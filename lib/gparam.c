@@ -65,6 +65,8 @@ void readinput(char *in_file, GParam *param)
     int err, end=1;
     unsigned int temp_ui;
 
+    param->d_gamma=0.0;
+
     input=fopen(in_file, "r");  // open the input file
     if(input==NULL)
       {
@@ -108,6 +110,16 @@ void readinput(char *in_file, GParam *param)
                     exit(EXIT_FAILURE);
                     }
                   param->d_beta=temp_d;
+                  }
+           else if(strncmp(str, "gamma", 5)==0)
+                  {
+                  err=fscanf(input, "%lf", &temp_d);
+                  if(err!=1)
+                    {
+                    fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+                    exit(EXIT_FAILURE);
+                    }
+                  param->d_gamma=temp_d;
                   }
 
            else if(strncmp(str, "sample", 6)==0)
@@ -247,19 +259,6 @@ void readinput(char *in_file, GParam *param)
 
       fclose(input);
 
-      #ifdef OPENMP_MODE
-      for(i=0; i<STDIM; i++)
-         {
-         temp_i = param->d_size[i] % 2;
-         if(temp_i!=0)
-           {
-           fprintf(stderr, "Error: size[%d] is not even.\n", i);
-           fprintf(stderr, "When using OpenMP all the sides of the lattice have to be even! (%s, %d)\n", __FILE__, __LINE__);
-           exit(EXIT_FAILURE);
-           }
-         }
-      #endif
-
       err=0;
       for(i=0; i<STDIM; i++)
          {
@@ -343,10 +342,6 @@ void print_parameters(GParam const * const param, time_t time_start, time_t time
     fprintf(fp, "| Simulation details for rpn |\n");
     fprintf(fp, "+----------------------------+\n\n");
 
-    #ifdef OPENMP_MODE
-     fprintf(fp, "using OpenMP with %d threads\n\n", NTHREADS);
-    #endif
-
     fprintf(fp, "number of flavours: %d\n", NFLAVOUR);
     fprintf(fp, "spacetime dimensionality: %d\n\n", STDIM);
 
@@ -358,6 +353,7 @@ void print_parameters(GParam const * const param, time_t time_start, time_t time
     fprintf(fp, "\n\n");
 
     fprintf(fp, "beta: %.10lf\n", param->d_beta);
+    fprintf(fp, "gamma: %.10lf\n", param->d_gamma);
     fprintf(fp, "\n");
 
     fprintf(fp, "sample:    %d\n", param->d_sample);
@@ -391,6 +387,67 @@ void print_parameters(GParam const * const param, time_t time_start, time_t time
 
     fclose(fp);
     }
+
+
+// print simulation parameters
+void print_parameters_z2(GParam const * const param, time_t time_start, time_t time_end, double accphi, double acclink)
+    {
+    FILE *fp;
+    int i;
+    double diff_sec;
+
+    fp=fopen(param->d_log_file, "w");
+    fprintf(fp, "+----------------------------+\n");
+    fprintf(fp, "| Simulation details for rpn |\n");
+    fprintf(fp, "+----------------------------+\n\n");
+
+    fprintf(fp, "number of flavours: %d\n", NFLAVOUR);
+    fprintf(fp, "spacetime dimensionality: %d\n\n", STDIM);
+
+    fprintf(fp, "lattice: %d", param->d_size[0]);
+    for(i=1; i<STDIM; i++)
+       {
+       fprintf(fp, "x%d", param->d_size[i]);
+       }
+    fprintf(fp, "\n\n");
+
+    fprintf(fp, "beta: %.10lf\n", param->d_beta);
+    fprintf(fp, "gamma: %.10lf\n", param->d_gamma);
+    fprintf(fp, "\n");
+
+    fprintf(fp, "sample:    %d\n", param->d_sample);
+    fprintf(fp, "thermal:   %d\n", param->d_thermal);
+    fprintf(fp, "measevery: %d\n", param->d_measevery);
+    fprintf(fp, "\n");
+
+    fprintf(fp, "start:                   %d\n", param->d_start);
+    fprintf(fp, "saveconf_back_every:     %d\n", param->d_saveconf_back_every);
+    fprintf(fp, "\n");
+
+    fprintf(fp, "epsilon_metro: %.10lf\n", param->d_epsilon_metro);
+    fprintf(fp, "metropolis acceptance (phi): %.10lf\n", accphi);
+    fprintf(fp, "metropolis acceptance (link): %.10lf\n", acclink);
+    fprintf(fp, "\n");
+
+    fprintf(fp, "randseed: %u\n", param->d_randseed);
+    fprintf(fp, "\n");
+
+    diff_sec = difftime(time_end, time_start);
+    fprintf(fp, "Simulation time: %.3lf seconds\n", diff_sec );
+    fprintf(fp, "\n");
+
+    if(endian()==0)
+      {
+      fprintf(fp, "Little endian machine\n\n");
+      }
+    else
+      {
+      fprintf(fp, "Big endian machine\n\n");
+      }
+
+    fclose(fp);
+    }
+
 
 #endif
 

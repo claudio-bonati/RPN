@@ -12,6 +12,7 @@ typedef struct GParam {
 
   // simulation parameters
   double d_beta;
+  double d_gamma;
 
   // simulation details
   int d_sample;
@@ -47,5 +48,6 @@ void init_derived_constants(GParam *param);
 void init_data_file(FILE **dataf, GParam const * const param);
 
 void print_parameters(GParam const * const param, time_t time_start, time_t time_end, double acc);
+void print_parameters_z2(GParam const * const param, time_t time_start, time_t time_end, double accphi, double acclink);
 
 #endif

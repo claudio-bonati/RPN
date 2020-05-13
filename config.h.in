@@ -12,9 +12,6 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* Define to 1 if you have the <omp.h> header file. */
-#undef HAVE_OMP_H
-
 /* Define to 1 if you have the <openssl/md5.h> header file. */
 #undef HAVE_OPENSSL_MD5_H
 
@@ -47,12 +44,6 @@
 
 /* Number of flavours */
 #undef NFLAVOUR
-
-/* Number of threads to be used in OpenMP */
-#undef NTHREADS
-
-/* Enable the use of openmp */
-#undef OPENMP_MODE
 
 /* Name of package */
 #undef PACKAGE

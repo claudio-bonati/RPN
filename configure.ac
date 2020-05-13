@@ -1,5 +1,5 @@
 AC_PREREQ([2.59])
-AC_INIT([rpn], [0.3.3], [claudio.bonati82@gmail.com])
+AC_INIT([rpn], [0.4.0], [claudio.bonati82@gmail.com])
 AM_INIT_AUTOMAKE(subdir-objects)
 AC_CONFIG_SRCDIR([./include/macro.h])
 AC_CONFIG_HEADERS([config.h])
@@ -50,20 +50,9 @@ AC_TYPE_UINT64_T
 
 
 ### ENABLING & CO
-AC_ARG_ENABLE([use-openmp], 
-              [  --enable-use-openmp     to enable the use of openmp], 
-              [use_openmp=yes], 
-              [use_openmp=no])
 
 
 ### FURTHER CHECKS
-if test x${use_openmp} = xyes; then
-  #check for openmp options
-  AC_OPENMP
-
-  #check for headers
-  AC_CHECK_HEADERS([omp.h], [], [AC_MSG_ERROR([Required header omp.h not found.])])
-fi
 
 
 
@@ -77,9 +66,6 @@ AC_ARG_VAR(ST_dim, spacetime dimensionality (default 2))
 
 
 ### DEFINE & CO
-if test x${use_openmp} = xyes; then
-  AC_DEFINE(OPENMP_MODE,, [Enable the use of openmp])
-fi
 
 
 ### TEST
@@ -95,20 +81,6 @@ else
   AC_DEFINE_UNQUOTED(NFLAVOUR, ${N_f}, [Number of flavours])
 fi
 
-if test x${use_openmp} = xyes; then
-  if test x${Num_threads} = x; then
-    AC_MSG_WARN([
-   *****
-   No chosen value for Num_threads: using the default value 1
-   *****
-   ])
-    AC_DEFINE_UNQUOTED(NTHREADS, 1, [Number of threads to be used in OpenMP])
-  else
-    AC_DEFINE_UNQUOTED(NTHREADS, ${Num_threads}, [Number of threads to be used in OpenMP])
-  fi
-else
-  AC_DEFINE_UNQUOTED(NTHREADS, 1, [Number of threads to be used in OpenMP])
-fi
 
 if test x${ST_dim} = x; then
   AC_MSG_WARN([ 

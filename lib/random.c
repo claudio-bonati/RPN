@@ -5,9 +5,6 @@
 
 #include<limits.h>
 #include<math.h>
-#ifdef OPENMP_MODE
-  #include<omp.h>
-#endif
 #include<time.h>
 
 #include"../include/dSFMT.h"
@@ -15,19 +12,15 @@
 
 
 // this is the status of the random number generator
-dsfmt_t rng_status[NTHREADS];
+dsfmt_t rng_status;
 
 
 // random number in (0,1)
 double casuale(void)
  {
  double ris;
- int thread_id=0;
- #ifdef OPENMP_MODE
-   thread_id=omp_get_thread_num();
- #endif
 
- ris=dsfmt_genrand_open_open(&(rng_status[thread_id]));
+ ris=dsfmt_genrand_open_open(&rng_status);
 
  return ris;
  }
@@ -36,7 +29,6 @@ double casuale(void)
 // initialize random generator
 void initrand(unsigned int s)
   {
-  int thread_id;
   unsigned int seed=s;
 
   if(s==0)
@@ -48,15 +40,7 @@ void initrand(unsigned int s)
       }
     }
 
-  for(thread_id=0; thread_id<NTHREADS; thread_id++)
-     {
-     dsfmt_init_gen_rand(&(rng_status[thread_id]), seed);
-     seed=(seed+10) % UINT_MAX;
-     if(seed==0)
-       {
-       seed=1;
-       }
-     }
+  dsfmt_init_gen_rand(&rng_status, seed);
   }
 
 

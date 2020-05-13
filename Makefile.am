@@ -72,6 +72,6 @@ on_z2bc_SOURCES=./src/on_z2bc.c \
                 $(random) \
                 $(vec)
 
-AM_CFLAGS = -std=c99 -O2 -Wall -Wextra -Werror -pedantic -Wconversion @OPENMP_CFLAGS@
+AM_CFLAGS = -std=c99 -O2 -Wall -Wextra -Werror -pedantic -Wconversion
 
 CLEANFILES = dati.dat log.dat dati.log conf.dat* template_input.in 

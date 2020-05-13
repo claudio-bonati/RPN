@@ -8,10 +8,6 @@
 #include<string.h>
 #include<time.h>
 
-#ifdef OPENMP_MODE
-  #include<omp.h>
-#endif
-
 #include"../include/conf.h"
 #include"../include/geometry.h"
 #include"../include/gparam.h"
@@ -26,12 +22,8 @@ void real_main(char *in_file)
     int count;
     FILE *datafilep;
     time_t time1, time2;
-    double acc, acc_local;
-
-    // to disable nested parallelism
-    #ifdef OPENMP_MODE
-      omp_set_nested(0);
-    #endif
+    double accphi, accphi_local;
+    double acclink, acclink_local;
 
     // read input file
     readinput(in_file, &param);
@@ -50,23 +42,25 @@ void real_main(char *in_file)
     init_conf_z2(&GC, &param);
 
     // acceptance
-    acc=0.0;
+    accphi=0.0;
+    acclink=0.0;
 
     // montecarlo
     time(&time1);
     // count starts from 1 to avoid problems using %
     for(count=1; count < param.d_sample + 1; count++)
        {
-       update_z2(&GC, &geo, &param, &acc_local);
+       update_z2(&GC, &geo, &param, &accphi_local, &acclink_local);
 
        if(count>param.d_thermal)
          {
-         acc+=acc_local;
+         accphi+=accphi_local;
+         acclink+=acclink_local;
          }
 
        if(count<param.d_thermal)
          {
-         if(acc_local>0.33)
+         if(accphi_local>0.33)
            {
            param.d_epsilon_metro*=1.1;
 
@@ -102,7 +96,8 @@ void real_main(char *in_file)
     time(&time2);
     // montecarlo end
 
-    acc/=(double)(param.d_sample-param.d_thermal);
+    accphi/=(double)(param.d_sample-param.d_thermal);
+    acclink/=(double)(param.d_sample-param.d_thermal);
 
     // close data file
     fclose(datafilep);
@@ -114,7 +109,7 @@ void real_main(char *in_file)
       }
 
     // print simulation details
-    print_parameters(&param, time1, time2, acc);
+    print_parameters_z2(&param, time1, time2, accphi, acclink);
 
     // free configuration
     free_conf(&GC, &param);
@@ -140,6 +135,7 @@ void print_template_input(void)
     fprintf(fp, "size 4 4\n");
     fprintf(fp,"\n");
     fprintf(fp, "beta 5.705\n");
+    fprintf(fp, "gamma 1.0\n");
     fprintf(fp,"\n");
     fprintf(fp, "sample    10\n");
     fprintf(fp, "thermal   0\n");
@@ -181,10 +177,6 @@ int main (int argc, char **argv)
 
       #ifdef DEBUG
         printf("\n\tDEBUG mode\n");
-      #endif
-
-      #ifdef OPENMP_MODE
-        printf("\n\tusing OpenMP with %d threads\n", NTHREADS);
       #endif
 
       printf("\n");

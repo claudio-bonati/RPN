@@ -8,10 +8,6 @@
 #include<string.h>
 #include<time.h>
 
-#ifdef OPENMP_MODE
-  #include<omp.h>
-#endif
-
 #include"../include/conf.h"
 #include"../include/geometry.h"
 #include"../include/gparam.h"
@@ -27,11 +23,6 @@ void real_main(char *in_file)
     FILE *datafilep;
     time_t time1, time2;
     double acc, acc_local;
-
-    // to disable nested parallelism
-    #ifdef OPENMP_MODE
-      omp_set_nested(0);
-    #endif
 
     // read input file
     readinput(in_file, &param);
@@ -188,10 +179,6 @@ int main (int argc, char **argv)
 
       #ifdef DEBUG
         printf("\n\tDEBUG mode\n");
-      #endif
-
-      #ifdef OPENMP_MODE
-        printf("\n\tusing OpenMP with %d threads\n", NTHREADS);
       #endif
 
       printf("\n");

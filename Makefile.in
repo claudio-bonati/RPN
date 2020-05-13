@@ -231,7 +231,6 @@ MKDIR_P = @MKDIR_P@
 N_f = @N_f@
 Num_threads = @Num_threads@
 OBJEXT = @OBJEXT@
-OPENMP_CFLAGS = @OPENMP_CFLAGS@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -359,7 +358,7 @@ on_z2bc_SOURCES = ./src/on_z2bc.c \
                 $(random) \
                 $(vec)
 
-AM_CFLAGS = -std=c99 -O2 -Wall -Wextra -Werror -pedantic -Wconversion @OPENMP_CFLAGS@
+AM_CFLAGS = -std=c99 -O2 -Wall -Wextra -Werror -pedantic -Wconversion
 CLEANFILES = dati.dat log.dat dati.log conf.dat* template_input.in 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
