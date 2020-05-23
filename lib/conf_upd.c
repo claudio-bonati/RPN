@@ -339,7 +339,7 @@ double plaqstaples_for_link(Conf *GC,
 
        ris += (GC->link[r][k]) * (GC->link[nnp(geo, r, k)][i]) * (GC->link[nnp(geo, r, i)][k]);
 
-       r1=nnp(geo, r, k);
+       r1=nnm(geo, r, k);
 
        ris += (GC->link[r1][k]) * (GC->link[r1][i]) * (GC->link[nnp(geo, r1, i)][k]);
        }
