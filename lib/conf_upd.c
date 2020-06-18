@@ -28,10 +28,14 @@ void metropolis_for_link(Conf *GC,
   new_link = old_link + 0.5*(2.0*casuale()-1);
   new_energy = new_link*new_link/param->d_beta - 2.0 * new_link * v1v2;
 
-  if(casuale()< exp(old_energy-new_energy))
+  if(old_energy>new_energy)
     {
     GC->link[r][i] = new_link;
     }
+  else if(casuale()< exp(old_energy-new_energy))
+         {
+         GC->link[r][i] = new_link;
+         }
   }
 
 
@@ -161,11 +165,16 @@ int metropolis_for_phi(Conf *GC,
 
   new_energy=-2.0 * scal_prod_Vec(&new_vector, &staple);
 
-  if(casuale()< exp(old_energy-new_energy))
+  if(old_energy>new_energy)
     {
     equal_Vec(&(GC->phi[r]), &new_vector);
     acc+=1;
     }
+  else if(casuale()< exp(old_energy-new_energy))
+         {
+         equal_Vec(&(GC->phi[r]), &new_vector);
+         acc+=1;
+         }
 
   #ifdef DEBUG
   if(fabs(norm_Vec(&(GC->phi[r]))-1)>MIN_VALUE)
@@ -274,11 +283,16 @@ int metropolis_for_phi_without_links(Conf *GC,
      new_energy -= param->d_beta * tmp * tmp;
      }
 
-  if(casuale()< exp(old_energy-new_energy))
+  if(old_energy>new_energy)
     {
     equal_Vec(&(GC->phi[r]), &new_vector);
     acc+=1;
     }
+  else if(casuale()< exp(old_energy-new_energy))
+         {
+         equal_Vec(&(GC->phi[r]), &new_vector);
+         acc+=1;
+         }
 
   return acc;
   }
@@ -374,14 +388,22 @@ int metropolis_for_link_z2(Conf *GC,
   new_link = -old_link;
   // new_energy = - old_energy;
 
-  if(casuale()< exp(2.0*param->d_beta*old_energy))
+  if(param->d_beta*old_energy>0)
     {
     GC->link[r][i] = new_link;
     return 1;
     }
   else
     {
-    return 0;
+    if(casuale()< exp(2.0*param->d_beta*old_energy))
+      {
+      GC->link[r][i] = new_link;
+      return 1;
+      }
+    else
+      {
+      return 0;
+      }
     }
   }
 
@@ -405,7 +427,13 @@ int metropolis_for_phi_z2(Conf *GC,
 
   new_energy=-param->d_beta * scal_prod_Vec(&new_vector, &staple);
 
-  if(casuale()< exp(old_energy-new_energy))
+
+  if(old_energy>new_energy)
+    {
+    equal_Vec(&(GC->phi[r]), &new_vector);
+    acc+=1;
+    }
+  else if(casuale()< exp(old_energy-new_energy))
     {
     equal_Vec(&(GC->phi[r]), &new_vector);
     acc+=1;
