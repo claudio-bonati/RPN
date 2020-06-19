@@ -4,9 +4,7 @@
 #include<math.h>
 #include<stdio.h>
 
-//#include"flavour_matrix.h"
 #include"macro.h"
-#include"random.h"
 
 typedef struct Vec {
    double comp[NFLAVOUR] __attribute__((aligned(DOUBLE_ALIGN)));
@@ -173,6 +171,8 @@ inline void lin_comb_Vec(Vec * restrict A,
      }
   }
 
+int print_on_screen_Vec(Vec const * const A);
+
 
 // A*=r
 inline void times_equal_real_Vec(Vec * restrict A, double r)
@@ -205,6 +205,7 @@ inline double norm_Vec(Vec const * const restrict A)
      {
      ris+=(A->comp[i]*A->comp[i]);
      }
+
   return sqrt(ris);
   }
 
@@ -224,17 +225,7 @@ inline void unitarize_Vec(Vec * restrict A)
 
 
 // random vector (normalized)
-inline void rand_vec_Vec(Vec * restrict A)
-  {
-  int i;
-
-  for(i=0; i<NFLAVOUR; i++)
-     {
-     A->comp[i]=2.0*casuale()-1.0;
-     }
-
-  unitarize_Vec(A);
-  }
+void rand_vec_Vec(Vec * restrict A);
 
 
 // real part of the scalar product re(v_1^{\dag}v_2)
@@ -270,7 +261,7 @@ void rand_rot_Vec(Vec * restrict A, Vec const * const restrict B, double epsilon
 
 
 // print on screen
-void print_on_screen_Vec(Vec const * const A);
+int print_on_screen_Vec(Vec const * const A);
 
 
 // print on file

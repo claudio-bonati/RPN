@@ -50,7 +50,7 @@ void real_main(char *in_file)
     // count starts from 1 to avoid problems using %
     for(count=1; count < param.d_sample + 1; count++)
        {
-       update_on_z2bc(&GC, &geo, &param, &accphi_local, &acclink_local);
+//       update_on_z2bc(&GC, &geo, &param, &accphi_local, &acclink_local);
 
        if(count>param.d_thermal)
          {

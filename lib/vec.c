@@ -6,8 +6,8 @@
 #include<stdlib.h>
 
 #include"../include/endianness.h"
-//#include"../include/flavour_matrix.h"
 #include"../include/macro.h"
+#include"../include/random.h"
 #include"../include/vec.h"
 
 
@@ -54,7 +54,21 @@ void unitarize_Vec(Vec * restrict A);
 
 
 // random vector (normalized)
-void rand_vec_Vec(Vec * restrict A);
+void rand_vec_Vec(Vec * restrict A)
+  {
+  #ifdef __INTEL_COMPILER
+  __assume_aligned(&(A->comp), DOUBLE_ALIGN);
+  #endif
+
+  int i;
+
+  for(i=0; i<NFLAVOUR; i++)
+     {
+     A->comp[i]=2.0*casuale()-1.0;
+     }
+
+  unitarize_Vec(A);
+  }
 
 
 // real part of the scalar product re(v_1^{\dag}v_2)
@@ -98,6 +112,27 @@ void rand_rot_Vec(Vec * restrict A, Vec const * const restrict B, double epsilon
        }
      }
   }
+
+// print on screen
+int print_on_screen_Vec(Vec const * const A)
+  {
+  int i, err;
+
+  for(i=0; i<NFLAVOUR; i++)
+     {
+     err=printf("%.16f ", A->comp[i]);
+     if(err<0)
+       {
+       fprintf(stderr, "Problem in writing on file a vector (%s, %d)\n", __FILE__, __LINE__);
+       return 1;
+       }
+     }
+  fprintf(stdout, "\n");
+
+  return 0;
+  }
+
+
 
 // print on file
 int print_on_file_Vec(FILE *fp, Vec const * const A)
