@@ -228,7 +228,7 @@ inline void unitarize_Vec(Vec * restrict A)
 void rand_vec_Vec(Vec * restrict A);
 
 
-// real part of the scalar product re(v_1^{\dag}v_2)
+// scalar product v_1^{t}*v_2
 inline double scal_prod_Vec(Vec const * const restrict A, Vec const * const restrict B)
   {
   #ifdef DEBUG
@@ -296,5 +296,4 @@ int read_from_binary_file_swap_Vec(FILE *fp, Vec *A);
 int read_from_binary_file_bigen_Vec(FILE *fp, Vec *A);
 
 
-
-#endif // SON_H
+#endif 
