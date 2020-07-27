@@ -42,7 +42,7 @@ In on_z2bc.c a O(N) model with annealed Z_2 links across the boundaries.
 The value of N is fixed at configure time by the macro N_f so that to simulate
 the RP^4 model one has to use 
 
-./configure Gauge_Group=SuN N_f=5
+./configure N_f=5
 
 The following macro are availbale
 
