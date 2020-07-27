@@ -627,7 +627,6 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 ST_dim
-Num_threads
 N_f
 EGREP
 GREP
@@ -730,7 +729,6 @@ LIBS
 CPPFLAGS
 CPP
 N_f
-Num_threads
 ST_dim'
 
 
@@ -1363,7 +1361,6 @@ Some influential environment variables:
               you have headers in a nonstandard directory <include dir>
   CPP         C preprocessor
   N_f         the number of flavours (default 2)
-  Num_threads number of threads to be used in OpenMP (default 1)
   ST_dim      spacetime dimensionality (default 2)
 
 Use these variables to override the choices made by `configure' or to help
@@ -4536,8 +4533,6 @@ _ACEOF
 
 
 ### VARIABLES
-
-
 
 
 

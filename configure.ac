@@ -60,8 +60,6 @@ AC_TYPE_UINT64_T
 
 AC_ARG_VAR(N_f, the number of flavours (default 2))
 
-AC_ARG_VAR(Num_threads, number of threads to be used in OpenMP (default 1))
-
 AC_ARG_VAR(ST_dim, spacetime dimensionality (default 2))
 
 
