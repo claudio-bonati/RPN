@@ -9,13 +9,11 @@
 #include"../include/geometry.h"
 #include"../include/gparam.h"
 
-// single index = even/odd lexicographic index
-void init_indexing_lexeo(void)
+// single index = lexicographic index
+void init_indexing_lex(void)
   {
-  cart_to_si = &cart_to_lexeo;
-  si_to_cart = &lexeo_to_cart;
-  lex_to_si = &lex_to_lexeo;
-  si_to_lex = &lexeo_to_lex;
+  cart_to_si = &cart_to_lex;
+  si_to_cart = &lex_to_cart;
   }
 
 
@@ -128,7 +126,9 @@ long nnp(Geometry const * const geo, long r, int i);
 
 long nnm(Geometry const * const geo, long r, int i);
 
+
 int parity(Geometry const * const geo, long r);
+
 
 void test_geometry(Geometry const * const geo, GParam const * const param)
   {
@@ -140,19 +140,6 @@ void test_geometry(Geometry const * const geo, GParam const * const param)
      {
      lex_to_cart(cart, si, param);
      ris_test=cart_to_lex(cart, param);
-
-     if(si != ris_test)
-       {
-       fprintf(stderr, "Problems while testing geometry! (%s, %d)\n", __FILE__, __LINE__);
-       exit(EXIT_FAILURE);
-       }
-     }
-
-  // test of lexeo_to_cart <-> cart_to_lexeo
-  for(si=0; si < param->d_volume; si++)
-     {
-     lexeo_to_cart(cart, si, param);
-     ris_test=cart_to_lexeo(cart, param);
 
      if(si != ris_test)
        {
@@ -230,102 +217,6 @@ void lex_to_cart(int *cartcoord, long lex, GParam const * const param)
      }
   }
 
-
-// cartesian coordinates -> lexicographic eo index
-long cart_to_lexeo(int const * const cartcoord, GParam const * const param)
-  {
-  long lex;
-  int i, eo;
-
-  lex=cart_to_lex(cartcoord, param);
-
-  eo=0;
-  for(i=0; i<STDIM; i++)
-     {
-     eo+=cartcoord[i];
-     }
-
-  if(eo % 2==0)
-    {
-    return lex/2;
-    }
-  else
-    {
-    return (lex + param->d_volume)/2;
-    }
-  // even sites are written first
-  }
-
-
-// lexicographic eo index -> cartesian coordinates
-void lexeo_to_cart(int *cartcoord, long lexeo, GParam const * const param)
-  {
-  long lex;
-  int i, eo;
-
-  if(param->d_volume % 2 == 0)
-    {
-    if(lexeo < param->d_volume/2)
-      {
-      lex=2*lexeo;
-      }
-    else
-      {
-      lex=2*(lexeo-param->d_volume/2);
-      }
-    lex_to_cart(cartcoord, lex, param);
-
-    eo=0;
-    for(i=0; i<STDIM; i++)
-       {
-       eo+=cartcoord[i];
-       }
-    eo = eo % 2;
-
-    // this is to take care of the case d_volume is even but not
-    // all the lattice extents are even
-    if( (eo == 0 && lexeo >= param->d_volume/2) ||
-        (eo == 1 && lexeo < param->d_volume/2) )
-      {
-      lex+=1;
-      lex_to_cart(cartcoord, lex, param);
-      }
-    }
-  else
-    {
-    if(lexeo <= param->d_volume/2)
-      {
-      lex=2*lexeo;
-      }
-    else
-      {
-      lex=2*(lexeo-param->d_volume/2)-1;
-      }
-    lex_to_cart(cartcoord, lex, param);
-    }
-  }
-
-
-//  lexicographic index -> lexicographic eo index
-long lex_to_lexeo(long lex, GParam const * const param)
-  {
-  int cartcoord[STDIM];
-
-  lex_to_cart(cartcoord, lex, param);
-
-  return cart_to_lexeo(cartcoord, param);
-  }
-
-
-//  lexicographic eo index -> lexicographic index
-long lexeo_to_lex(long lexeo, GParam const * const param)
-  {
-  int cartcoord[STDIM];
-
-  lexeo_to_cart(cartcoord, lexeo, param);
-
-  return cart_to_lex(cartcoord, param);
-  }
 
 
 #endif

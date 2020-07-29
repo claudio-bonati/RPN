@@ -323,7 +323,7 @@ void read_conf(Conf *GC, GParam const * const param)
   FILE *fp;
   int i, dimension, tmp_i;
   int err, mu;
-  long lex, si;
+  long r;
   char md5sum_new[2*MD5_DIGEST_LENGTH+1];
   char md5sum_old[2*MD5_DIGEST_LENGTH+1];
 
@@ -388,11 +388,9 @@ void read_conf(Conf *GC, GParam const * const param)
          err=fgetc(fp);
          }
 
-    for(lex=0; lex<param->d_volume; lex++)
+    for(r=0; r<param->d_volume; r++)
        {
-       si=lex_to_si(lex, param);
-
-       err=read_from_binary_file_bigen_Vec(fp, &(GC->phi[si]));
+       err=read_from_binary_file_bigen_Vec(fp, &(GC->phi[r]));
        if(err!=0)
             {
             fprintf(stderr, "Error in reading the file %s (%s, %d)\n", param->d_conf_file, __FILE__, __LINE__);
@@ -401,7 +399,7 @@ void read_conf(Conf *GC, GParam const * const param)
 
        for(mu=0; mu<STDIM; mu++)
           {
-          err=read_from_binary_file_bigen_double(fp, &(GC->link[si][mu]));
+          err=read_from_binary_file_bigen_double(fp, &(GC->link[r][mu]));
           if(err!=0)
             {
             fprintf(stderr, "Error in reading the file %s (%s, %d)\n", param->d_conf_file, __FILE__, __LINE__);
@@ -453,7 +451,7 @@ void write_conf_on_file_with_name(Conf const * const GC,
                                   GParam const * const param,
                                   char const * const namefile)
   {
-  long si, lex;
+  long r;
   int i, mu, err;
   char md5sum[2*MD5_DIGEST_LENGTH+1];
   FILE *fp;
@@ -485,11 +483,9 @@ void write_conf_on_file_with_name(Conf const * const GC,
     }
   else
     {
-    for(lex=0; lex<param->d_volume; lex++)
+    for(r=0; r<param->d_volume; r++)
        {
-       si=lex_to_si(lex, param);
-
-       err=print_on_binary_file_bigen_Vec(fp, &(GC->phi[si]) );
+       err=print_on_binary_file_bigen_Vec(fp, &(GC->phi[r]) );
        if(err!=0)
          {
          fprintf(stderr, "Error in writing the file %s (%s, %d)\n", namefile, __FILE__, __LINE__);
@@ -498,7 +494,7 @@ void write_conf_on_file_with_name(Conf const * const GC,
 
        for(mu=0; mu<STDIM; mu++)
           {
-          err=print_on_binary_file_bigen_double(fp, GC->link[si][mu] );
+          err=print_on_binary_file_bigen_double(fp, GC->link[r][mu] );
           if(err!=0)
             {
             fprintf(stderr, "Error in writing the file %s (%s, %d)\n", namefile, __FILE__, __LINE__);
@@ -544,18 +540,16 @@ void compute_md5sum_conf(char *res, Conf const * const GC, GParam const * const 
   {
   MD5_CTX mdContext;
   unsigned char c[MD5_DIGEST_LENGTH];
-  long si, lex;
+  long r;
   double a;
   int mu, k;
 
   MD5_Init(&mdContext);
-  for(lex=0; lex<param->d_volume; lex++)
+  for(r=0; r<param->d_volume; r++)
      {
-     si=lex_to_si(lex, param);
-
      for(k=0; k<NFLAVOUR; k++)
         {
-        a=(GC->phi[si]).comp[k];
+        a=(GC->phi[r]).comp[k];
         if(endian()==0)
           {
           SwapBytesDouble(&a);
@@ -565,7 +559,7 @@ void compute_md5sum_conf(char *res, Conf const * const GC, GParam const * const 
 
      for(mu=0; mu<STDIM; mu++)
         {
-        a=GC->link[si][mu];
+        a=GC->link[r][mu];
         if(endian()==0)
           {
           SwapBytesDouble(&a);
