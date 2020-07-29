@@ -19,7 +19,7 @@ void real_main(char *in_file)
     Geometry geo;
     GParam param;
 
-    int count;
+    long count;
     FILE *datafilep;
     time_t time1, time2;
     double acc, acc_local;

@@ -171,8 +171,6 @@ inline void lin_comb_Vec(Vec * restrict A,
      }
   }
 
-int print_on_screen_Vec(Vec const * const A);
-
 
 // A*=r
 inline void times_equal_real_Vec(Vec * restrict A, double r)
